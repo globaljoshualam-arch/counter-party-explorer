@@ -19,9 +19,9 @@ Two CSV datasets, uploaded monthly:
 
 **Scale:**
 - ~104 unique payer clients
-- ~11,800 unique counterparties (potential leads)
+- ~11,800 unique counterparties (after filtering out existing Airwallex clients)
 - ~31 BD managers
-- ~64k rows combined
+- ~64k rows combined (pre-filter)
 
 ## Core Features
 
@@ -118,6 +118,21 @@ score = (
 - **network_score:** Number of Airwallex clients they transact with (capped at 5 = 100)
 
 Leads appearing in BOTH datasets (receives AND pays) get a 10-point bonus (capped at 100).
+
+## Lead Filtering
+
+**Exclude existing Airwallex clients.** Both datasets have a status column:
+
+| Column | Dataset | Values |
+|--------|---------|--------|
+| `receiver_customer_status` | Payment | potential lead, existing customer, likely existing customer |
+| `customer_status` | Remitter | potential lead, existing customer, likely existing customer |
+
+**Filter logic:**
+- **Include:** `potential lead` only
+- **Exclude:** `existing customer`, `likely existing customer`
+
+This ensures reps only see net-new prospects, not companies already using Airwallex.
 
 ## Lead Deduplication
 
