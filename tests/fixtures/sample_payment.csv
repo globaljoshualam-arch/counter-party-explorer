@@ -1,0 +1,6 @@
+payer_account_id,payer_business_name,payer_client_name,bd_manager,payer_total_volume,payer_total_payments,receiver_name,receiver_customer_status,receiver_entity_type,receiver_country,payment_ccy,payment_month,monthly_payment_count,monthly_payment_amount,monthly_payer_amount
+acc-001,Client Alpha,Client Alpha,David Tou,50000000,100,Acme Trading Ltd,potential lead,COMPANY,Hong Kong,USD,2026-03-01T00:00:00.000Z,10,500000,500000
+acc-001,Client Alpha,Client Alpha,David Tou,50000000,100,Acme Trading Ltd,potential lead,COMPANY,Hong Kong,USD,2026-02-01T00:00:00.000Z,8,400000,400000
+acc-002,Client Beta,Client Beta,Vicky Chan,30000000,80,Acme Trading Ltd,potential lead,COMPANY,Hong Kong,HKD,2026-03-01T00:00:00.000Z,5,2000000,250000
+acc-001,Client Alpha,Client Alpha,David Tou,50000000,100,Existing Corp,existing customer,COMPANY,Singapore,USD,2026-03-01T00:00:00.000Z,3,100000,100000
+acc-003,Client Gamma,Client Gamma,Sarah Lee,20000000,50,Pacific Inc,potential lead,COMPANY,Japan,JPY,2026-03-01T00:00:00.000Z,15,50000000,350000

@@ -1,0 +1,5 @@
+awx_id,client_name,bd_manager,client_go_live_date,priority_score,remitter_account_name,customer_status,ccy,deposit_month,deposit_count,monthly_deposit_amount,monthly_deposit_usd
+awx-001,Client Alpha,David Tou,2023-01-15,90,Acme Trading Ltd,potential lead,USD,2026-03-01T00:00:00.000Z,12,600000,600000
+awx-001,Client Alpha,David Tou,2023-01-15,90,Acme Trading Ltd,potential lead,USD,2026-02-01T00:00:00.000Z,10,500000,500000
+awx-002,Client Beta,Vicky Chan,2023-06-01,85,Delta Supplies,potential lead,HKD,2026-03-01T00:00:00.000Z,8,1500000,190000
+awx-003,Client Gamma,Sarah Lee,2024-01-01,70,Existing Corp,existing customer,SGD,2026-03-01T00:00:00.000Z,5,200000,150000
