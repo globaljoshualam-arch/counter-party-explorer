@@ -82,12 +82,17 @@ def check_password():
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_preloaded_data():
-    """Load pre-processed data from parquet file. Cached for 1 hour."""
-    parquet_path = REPO_DATA_DIR / "leads_processed.parquet"
+    """Load pre-processed data from CSV file. Cached for 1 hour."""
+    import json
+    csv_path = REPO_DATA_DIR / "leads_processed.csv"
 
     try:
-        if parquet_path.exists():
-            return pd.read_parquet(parquet_path)
+        if csv_path.exists():
+            df = pd.read_csv(csv_path)
+            # Parse JSON columns back to Python objects
+            df['client_details'] = df['client_details'].apply(json.loads)
+            df['currencies'] = df['currencies'].apply(json.loads)
+            return df
     except Exception as e:
         st.error(f"Error loading data: {e}")
 
