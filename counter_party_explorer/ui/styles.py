@@ -54,7 +54,8 @@ GLOBAL_CSS = """
     width: auto;
     opacity: 0.9;
     transition: opacity 200ms ease-out;
-    filter: invert(1) brightness(2);  /* Invert black logo to white */
+    /* Convert black logo to Airwallex orange (#FF6B40) */
+    filter: invert(52%) sepia(93%) saturate(1352%) hue-rotate(343deg) brightness(101%) contrast(101%);
 }
 
 .awx-logo-container img:hover {
