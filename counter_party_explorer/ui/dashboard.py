@@ -57,9 +57,13 @@ def render_dashboard(df: pd.DataFrame):
         search = st.text_input("🔍 Search", placeholder="Company name...", label_visibility="collapsed")
 
     with col2:
-        countries = df["country"].dropna().unique().tolist()
-        regions = ["All Regions"] + sorted([c for c in countries if c and isinstance(c, str)])
-        region_filter = st.selectbox("Region", regions, label_visibility="collapsed")
+        # Get all unique currencies from the currencies lists
+        all_currencies = set()
+        for curr_list in df["currencies"]:
+            if isinstance(curr_list, list):
+                all_currencies.update(curr_list)
+        currency_options = ["All Currencies"] + sorted(list(all_currencies))
+        currency_filter = st.selectbox("Currency", currency_options, label_visibility="collapsed")
 
     with col3:
         type_filter = st.selectbox("Type", ["All Types", "Receives", "Pays", "Both"], label_visibility="collapsed")
@@ -75,8 +79,8 @@ def render_dashboard(df: pd.DataFrame):
             filtered_df["company_name"].str.contains(search, case=False, na=False)
         ]
 
-    if region_filter != "All Regions":
-        filtered_df = filtered_df[filtered_df["country"] == region_filter]
+    if currency_filter != "All Currencies":
+        filtered_df = filtered_df[filtered_df["currencies"].apply(lambda x: currency_filter in x if isinstance(x, list) else False)]
 
     if type_filter == "Receives":
         filtered_df = filtered_df[filtered_df["receives"] == True]

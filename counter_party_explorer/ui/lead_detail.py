@@ -232,5 +232,6 @@ Type: {'Receives & Pays' if receives and pays else 'Receives' if receives else '
         st.progress(score / 100)
         st.markdown(f"`{score} / 100`")
 
-        st.caption("**Data Freshness**")
+        st.caption("**Latest Activity**")
         st.markdown(f"`{str(latest_month)[:10] if latest_month else 'N/A'}`")
+        st.caption("Last payment received from or paid to our clients")
