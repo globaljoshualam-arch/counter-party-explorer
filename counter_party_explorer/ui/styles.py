@@ -430,6 +430,29 @@ section[data-testid="stFileUploader"] > div {
     visibility: hidden !important;
 }
 
+/* IMPORTANT: Prevent sidebar from being hidden */
+/* Hide the collapse/expand button */
+[data-testid="collapsedControl"] {
+    display: none !important;
+}
+
+/* Ensure sidebar is always visible */
+[data-testid="stSidebar"] {
+    transform: none !important;
+    position: relative !important;
+    min-width: 260px !important;
+}
+
+/* Hide the X close button in sidebar */
+[data-testid="stSidebar"] button[kind="header"] {
+    display: none !important;
+}
+
+/* Ensure sidebar content area doesn't collapse */
+[data-testid="stSidebarContent"] {
+    display: block !important;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

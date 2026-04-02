@@ -10,7 +10,8 @@ import sys
 st.set_page_config(
     page_title="Counter-Party Lead Explorer",
     page_icon="🎯",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"  # Always start with sidebar visible
 )
 
 # Fix Python path for Streamlit Cloud - add repo root to allow package imports
