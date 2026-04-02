@@ -27,7 +27,10 @@ def check_password():
     def password_entered():
         """Checks whether a password entered by the user is correct."""
         entered = st.session_state.get("password", "")
-        correct = st.secrets.get("auth", {}).get("password", "")
+        try:
+            correct = st.secrets.get("auth", {}).get("password", "")
+        except Exception:
+            correct = ""
         if entered == correct:
             st.session_state["password_correct"] = True
             del st.session_state["password"]
@@ -110,8 +113,12 @@ def main():
 
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
-    # Check password
-    has_auth = "auth" in st.secrets and "password" in st.secrets["auth"]
+    # Check password (skip if secrets not configured)
+    try:
+        has_auth = hasattr(st, 'secrets') and "auth" in st.secrets and "password" in st.secrets["auth"]
+    except Exception:
+        has_auth = False
+
     if has_auth and not check_password():
         st.stop()
 
