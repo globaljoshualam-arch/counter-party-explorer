@@ -15,10 +15,8 @@ from counter_party_explorer.ui.upload import render_upload
 from counter_party_explorer.ui.styles import GLOBAL_CSS
 from counter_party_explorer.data.processor import process_data
 
-# Data file paths - check repo data folder first, then Downloads
+# Data file paths
 REPO_DATA_DIR = Path(__file__).parent.parent / "data"
-DOWNLOADS_DIR = Path.home() / "Downloads"
-
 PAYMENT_FILENAME = "Trade_Lead_Gen_from_Payment.csv"
 REMITTER_FILENAME = "Trade_Lead_Gen_from_Remitter.csv"
 
@@ -28,34 +26,33 @@ def check_password():
 
     def password_entered():
         """Checks whether a password entered by the user is correct."""
-        if st.session_state.get("password") == st.secrets.get("auth", {}).get("password", ""):
+        entered = st.session_state.get("password", "")
+        correct = st.secrets.get("auth", {}).get("password", "")
+        if entered == correct:
             st.session_state["password_correct"] = True
-            del st.session_state["password"]  # Don't store password
+            del st.session_state["password"]
         else:
             st.session_state["password_correct"] = False
 
-    # First run or password not correct
     if "password_correct" not in st.session_state:
         st.markdown("""
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
-            <div style="background: #171717; border: 1px solid #262626; border-radius: 16px; padding: 48px; max-width: 400px; width: 100%;">
-                <div style="text-align: center; margin-bottom: 32px;">
-                    <div style="
-                        width: 64px;
-                        height: 64px;
-                        background: linear-gradient(135deg, #FF6B40, #FF8A66);
-                        border-radius: 16px;
-                        display: inline-flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-weight: 700;
-                        font-size: 24px;
-                        color: white;
-                        margin-bottom: 16px;
-                    ">CP</div>
-                    <h2 style="color: #FAFAFA; margin: 0;">Counter-Party Lead Explorer</h2>
-                    <p style="color: #737373; margin-top: 8px;">Enter password to continue</p>
-                </div>
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+            <div style="background: #171717; border: 1px solid #262626; border-radius: 16px; padding: 48px; max-width: 400px; width: 100%; text-align: center;">
+                <div style="
+                    width: 64px;
+                    height: 64px;
+                    background: linear-gradient(135deg, #FF6B40, #FF8A66);
+                    border-radius: 16px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 24px;
+                    color: white;
+                    margin-bottom: 16px;
+                ">CP</div>
+                <h2 style="color: #FAFAFA; margin: 0 0 8px 0;">Counter-Party Lead Explorer</h2>
+                <p style="color: #737373;">Enter password to continue</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -83,42 +80,32 @@ def check_password():
     return True
 
 
+@st.cache_data(ttl=3600, show_spinner=False)
 def load_preloaded_data():
-    """Load data from repo data folder or Downloads folder."""
+    """Load data from repo data folder. Cached for 1 hour."""
     payment_df = None
     remitter_df = None
 
-    # Check repo data folder first
     payment_path = REPO_DATA_DIR / PAYMENT_FILENAME
     remitter_path = REPO_DATA_DIR / REMITTER_FILENAME
 
-    # Fall back to Downloads if not in repo
-    if not payment_path.exists():
-        payment_path = DOWNLOADS_DIR / PAYMENT_FILENAME
-    if not remitter_path.exists():
-        remitter_path = DOWNLOADS_DIR / REMITTER_FILENAME
+    try:
+        if payment_path.exists():
+            payment_df = pd.read_csv(payment_path)
 
-    # Also check for the full filename with prefix
-    if not payment_path.exists():
-        payment_path = DOWNLOADS_DIR / "Trade Counter Party Opportunity Identification - Trade_Lead_Gen_from_Payment.csv"
-    if not remitter_path.exists():
-        remitter_path = DOWNLOADS_DIR / "Trade_Lead_Gen_from_Remitter.csv"
+        if remitter_path.exists():
+            remitter_df = pd.read_csv(remitter_path)
 
-    if payment_path.exists():
-        payment_df = pd.read_csv(payment_path)
-
-    if remitter_path.exists():
-        remitter_df = pd.read_csv(remitter_path)
-
-    if payment_df is not None or remitter_df is not None:
-        return process_data(payment_df=payment_df, remitter_df=remitter_df)
+        if payment_df is not None or remitter_df is not None:
+            return process_data(payment_df=payment_df, remitter_df=remitter_df)
+    except Exception as e:
+        st.error(f"Error loading data: {e}")
 
     return pd.DataFrame()
 
 
 def main():
     """Main application function with routing and navigation."""
-    # Page configuration - must be first Streamlit command
     st.set_page_config(
         page_title="Counter-Party Lead Explorer",
         page_icon="🎯",
@@ -126,26 +113,26 @@ def main():
         initial_sidebar_state="expanded"
     )
 
-    # Apply global styles
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
-    # Check password (skip if no password configured in secrets)
+    # Check password
     has_auth = "auth" in st.secrets and "password" in st.secrets["auth"]
     if has_auth and not check_password():
         st.stop()
 
     # Initialize session state
     if "view" not in st.session_state:
-        st.session_state.view = "dashboard"  # Default to dashboard
-    if "leads_df" not in st.session_state:
-        # Auto-load data from repo or Downloads
-        st.session_state.leads_df = load_preloaded_data()
+        st.session_state.view = "dashboard"
     if "selected_lead" not in st.session_state:
         st.session_state.selected_lead = None
 
-    # Sidebar with custom styling
+    # Load data with spinner (only on first load)
+    if "leads_df" not in st.session_state:
+        with st.spinner("Loading leads data... This may take a moment."):
+            st.session_state.leads_df = load_preloaded_data()
+
+    # Sidebar
     with st.sidebar:
-        # Logo
         st.markdown('''
         <div style="display: flex; align-items: center; gap: 12px; padding: 0 8px; margin-bottom: 36px;">
             <div style="
@@ -164,12 +151,10 @@ def main():
         </div>
         ''', unsafe_allow_html=True)
 
-        # Navigation section
         st.markdown('''
         <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #737373; padding: 0 12px; margin-bottom: 10px;">Discovery</div>
         ''', unsafe_allow_html=True)
 
-        # Top Leads button
         if st.button("◉ Top Leads", use_container_width=True, key="nav_leads"):
             st.session_state.view = "dashboard"
             st.rerun()
@@ -178,20 +163,18 @@ def main():
         <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #737373; padding: 0 12px; margin: 20px 0 10px 0;">Data</div>
         ''', unsafe_allow_html=True)
 
-        # Upload button
         if st.button("↑ Upload Data", use_container_width=True, key="nav_upload"):
             st.session_state.view = "upload"
             st.rerun()
 
-        # Refresh data button
         if st.button("↻ Refresh Data", use_container_width=True, key="nav_refresh"):
+            load_preloaded_data.clear()
             st.session_state.leads_df = load_preloaded_data()
             st.session_state.view = "dashboard"
             st.rerun()
 
         st.markdown('<div style="height: 1px; background: #262626; margin: 24px 0;"></div>', unsafe_allow_html=True)
 
-        # Data status
         st.markdown('''
         <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #737373; padding: 0 12px; margin-bottom: 10px;">Status</div>
         ''', unsafe_allow_html=True)
