@@ -41,6 +41,9 @@ def _convert_to_usd(amount: float, currency: str) -> float:
 
 def _prepare_payment_data(df: pd.DataFrame) -> pd.DataFrame:
     """Transform payment data into common schema."""
+    # Ensure payment_month is datetime
+    month_col = pd.to_datetime(df["payment_month"], errors="coerce")
+
     result = pd.DataFrame({
         "company_name": df["receiver_name"],
         "normalized_name": df["receiver_name"].apply(normalize_company_name),
@@ -49,7 +52,7 @@ def _prepare_payment_data(df: pd.DataFrame) -> pd.DataFrame:
             lambda r: _convert_to_usd(r["monthly_payment_amount"], r["payment_ccy"]), axis=1
         ),
         "transaction_count": df["monthly_payment_count"],
-        "month": df["payment_month"],
+        "month": month_col,
         "client_id": df["payer_account_id"],
         "client_name": df["payer_business_name"],
         "bd_manager": df["bd_manager"],
@@ -61,13 +64,16 @@ def _prepare_payment_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def _prepare_remitter_data(df: pd.DataFrame) -> pd.DataFrame:
     """Transform remitter data into common schema."""
+    # Ensure deposit_month is datetime
+    month_col = pd.to_datetime(df["deposit_month"], errors="coerce")
+
     result = pd.DataFrame({
         "company_name": df["remitter_account_name"],
         "normalized_name": df["remitter_account_name"].apply(normalize_company_name),
         "country": None,  # Not available in remitter data
         "volume_usd": df["monthly_deposit_usd"],
         "transaction_count": df["deposit_count"],
-        "month": df["deposit_month"],
+        "month": month_col,
         "client_id": df["awx_id"],
         "client_name": df["client_name"],
         "bd_manager": df["bd_manager"],

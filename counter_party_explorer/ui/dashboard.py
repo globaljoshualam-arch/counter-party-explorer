@@ -1,16 +1,18 @@
-"""Main dashboard view with filters and pagination."""
+"""Main dashboard view with filters and lead table."""
 
 import streamlit as st
 import pandas as pd
 
-from counter_party_explorer.ui.styles import GLOBAL_CSS, score_badge, type_badges, region_badge, get_flag
+from counter_party_explorer.ui.styles import GLOBAL_CSS, get_flag
 
 
 def format_volume(amount: float) -> str:
     """Format volume as $1.2M, $500K, etc."""
     if pd.isna(amount) or not amount:
         return "$0"
-    if amount >= 1_000_000:
+    if amount >= 1_000_000_000:
+        return f"${amount / 1_000_000_000:.1f}B"
+    elif amount >= 1_000_000:
         return f"${amount / 1_000_000:.1f}M"
     elif amount >= 1_000:
         return f"${amount / 1_000:.0f}K"
@@ -19,8 +21,7 @@ def format_volume(amount: float) -> str:
 
 
 def render_dashboard(df: pd.DataFrame):
-    """Main dashboard function with filters and pagination."""
-    # Apply global CSS
+    """Main dashboard with stats, filters, and lead table."""
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
     # Initialize session state
@@ -28,64 +29,55 @@ def render_dashboard(df: pd.DataFrame):
         st.session_state.current_page = 1
 
     # Header
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        st.title("Top Leads")
-    with col2:
-        if st.button("📤 Upload Data", type="primary"):
-            st.session_state.view = "upload"
-            st.rerun()
+    st.markdown("# Top Leads")
 
-    # Metrics
+    # Stats cards using columns
+    col1, col2, col3, col4 = st.columns(4)
+
     total_leads = len(df)
     high_potential = len(df[df["score"] >= 80])
     network_volume = df["total_volume_usd"].sum()
     multi_client = len(df[df["client_count"] > 1])
 
-    col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Total Leads", f"{total_leads:,}")
+        st.metric("Total Leads", f"{total_leads:,}", help="Unique counterparties")
     with col2:
         st.metric("High Potential", f"{high_potential:,}", help="Score 80+")
     with col3:
-        st.metric("Network Volume", format_volume(network_volume))
+        st.metric("Network Volume", format_volume(network_volume), help="Monthly transactions")
     with col4:
         st.metric("Multi-Client", f"{multi_client:,}", help="2+ client connections")
 
     st.divider()
 
-    # Filters
-    col1, col2, col3, col4 = st.columns(4)
+    # Filters row
+    col1, col2, col3, col4 = st.columns([2, 1, 1, 1])
 
     with col1:
-        search = st.text_input("🔍 Search", placeholder="Company name...")
+        search = st.text_input("🔍 Search", placeholder="Company name...", label_visibility="collapsed")
 
     with col2:
-        # Handle null countries
         countries = df["country"].dropna().unique().tolist()
-        regions = ["All"] + sorted([c for c in countries if c])
-        region_filter = st.selectbox("🌍 Region", regions)
+        regions = ["All Regions"] + sorted([c for c in countries if c and isinstance(c, str)])
+        region_filter = st.selectbox("Region", regions, label_visibility="collapsed")
 
     with col3:
-        type_filter = st.selectbox("💱 Type", ["All", "Receives", "Pays", "Both"])
+        type_filter = st.selectbox("Type", ["All Types", "Receives", "Pays", "Both"], label_visibility="collapsed")
 
     with col4:
-        score_filter = st.selectbox("⭐ Score", ["All", "80+", "60-79", "<60"])
+        score_filter = st.selectbox("Score", ["All Scores", "80+", "60-79", "<60"], label_visibility="collapsed")
 
     # Apply filters
     filtered_df = df.copy()
 
-    # Search filter
     if search:
         filtered_df = filtered_df[
             filtered_df["company_name"].str.contains(search, case=False, na=False)
         ]
 
-    # Region filter
-    if region_filter != "All":
+    if region_filter != "All Regions":
         filtered_df = filtered_df[filtered_df["country"] == region_filter]
 
-    # Type filter (using boolean receives/pays columns)
     if type_filter == "Receives":
         filtered_df = filtered_df[filtered_df["receives"] == True]
     elif type_filter == "Pays":
@@ -93,7 +85,6 @@ def render_dashboard(df: pd.DataFrame):
     elif type_filter == "Both":
         filtered_df = filtered_df[(filtered_df["receives"] == True) & (filtered_df["pays"] == True)]
 
-    # Score filter
     if score_filter == "80+":
         filtered_df = filtered_df[filtered_df["score"] >= 80]
     elif score_filter == "60-79":
@@ -102,10 +93,9 @@ def render_dashboard(df: pd.DataFrame):
         filtered_df = filtered_df[filtered_df["score"] < 60]
 
     # Pagination
-    items_per_page = 20
+    items_per_page = 15
     total_pages = max(1, (len(filtered_df) - 1) // items_per_page + 1)
 
-    # Ensure current page is valid
     if st.session_state.current_page > total_pages:
         st.session_state.current_page = 1
 
@@ -113,75 +103,76 @@ def render_dashboard(df: pd.DataFrame):
     end_idx = start_idx + items_per_page
     page_df = filtered_df.iloc[start_idx:end_idx]
 
+    # Results count
     st.caption(f"Showing {len(filtered_df):,} leads")
 
-    # Leads table
     if len(page_df) == 0:
         st.info("No leads found matching your filters.")
-    else:
-        for idx, row in page_df.iterrows():
-            with st.container():
-                cols = st.columns([0.8, 2.5, 1.5, 1.2, 1.2, 0.8, 1.2, 0.6])
+        return
 
-                # Score
-                with cols[0]:
-                    score = row["score"]
-                    if score >= 80:
-                        color = "#22C55E"
-                    elif score >= 60:
-                        color = "#F59E0B"
-                    else:
-                        color = "#404040"
-                    st.markdown(f'<div style="background:{color};color:white;padding:8px;border-radius:8px;text-align:center;font-family:monospace;font-weight:600;">{score}</div>', unsafe_allow_html=True)
+    # Render each lead as a card/row
+    for idx, row in page_df.iterrows():
+        score = int(row.get("score", 0))
+        company_name = row.get("company_name", "Unknown")
+        country = row.get("country")
+        if not country or not isinstance(country, str):
+            country = "—"
+        flag = get_flag(country) if country != "—" else ""
+        receives = row.get("receives", False)
+        pays = row.get("pays", False)
+        volume = row.get("total_volume_usd", 0)
+        txn_count = row.get("total_transactions", 0)
+        client_count = row.get("client_count", 0)
+        currencies = row.get("currencies", [])
+        if isinstance(currencies, str):
+            currencies = [currencies] if currencies else []
 
-                # Company
-                with cols[1]:
-                    st.markdown(f"**{row['company_name']}**")
+        # Score color
+        if score >= 80:
+            score_color = "🟢"
+        elif score >= 60:
+            score_color = "🟡"
+        else:
+            score_color = "⚪"
 
-                # Region
-                with cols[2]:
-                    country = row.get("country") or "Unknown"
-                    flag = get_flag(country)
-                    st.markdown(f'<span style="background:rgba(255,107,64,0.1);color:#FF8A66;padding:4px 10px;border-radius:6px;">{flag} {country}</span>', unsafe_allow_html=True)
+        # Type indicator
+        type_str = ""
+        if receives and pays:
+            type_str = "↔️ Both"
+        elif receives:
+            type_str = "📥 Receives"
+        elif pays:
+            type_str = "📤 Pays"
 
-                # Type
-                with cols[3]:
-                    receives = row.get("receives", False)
-                    pays = row.get("pays", False)
-                    types = []
-                    if receives:
-                        types.append('<span style="color:#4ADE80;">Recv</span>')
-                    if pays:
-                        types.append('<span style="color:#60A5FA;">Pay</span>')
-                    st.markdown(" / ".join(types) if types else "—", unsafe_allow_html=True)
+        # Currency display
+        currency_str = ", ".join(currencies[:3])
+        if len(currencies) > 3:
+            currency_str += f" +{len(currencies) - 3}"
 
-                # Volume
-                with cols[4]:
-                    st.markdown(f'<span style="font-family:monospace;">{format_volume(row["total_volume_usd"])}</span>', unsafe_allow_html=True)
+        # Create row with columns
+        cols = st.columns([0.8, 3, 1.2, 1, 1.2, 0.8, 1.5, 1])
 
-                # Clients
-                with cols[5]:
-                    st.markdown(f'<span style="font-family:monospace;">{row["client_count"]}</span>', unsafe_allow_html=True)
+        with cols[0]:
+            st.markdown(f"**{score_color} {score}**")
+        with cols[1]:
+            st.markdown(f"**{company_name}**")
+        with cols[2]:
+            st.markdown(f"{flag} {country}")
+        with cols[3]:
+            st.markdown(type_str)
+        with cols[4]:
+            st.markdown(f"**{format_volume(volume)}**")
+        with cols[5]:
+            st.markdown(f"{client_count} clients")
+        with cols[6]:
+            st.markdown(f"`{currency_str}`" if currency_str else "—")
+        with cols[7]:
+            if st.button("View →", key=f"view_{idx}"):
+                st.session_state.view = "detail"
+                st.session_state.selected_lead = row.to_dict()
+                st.rerun()
 
-                # Currencies
-                with cols[6]:
-                    currencies = row.get("currencies", [])
-                    if isinstance(currencies, list) and currencies:
-                        display = ", ".join(currencies[:3])
-                        if len(currencies) > 3:
-                            display += f" +{len(currencies) - 3}"
-                        st.markdown(f'<span style="font-family:monospace;font-size:12px;">{display}</span>', unsafe_allow_html=True)
-                    else:
-                        st.markdown("—")
-
-                # View button
-                with cols[7]:
-                    if st.button("👁️", key=f"view_{idx}"):
-                        st.session_state.view = "detail"
-                        st.session_state.selected_lead = row.to_dict()
-                        st.rerun()
-
-            st.divider()
+        st.divider()
 
     # Pagination controls
     if total_pages > 1:
@@ -194,12 +185,7 @@ def render_dashboard(df: pd.DataFrame):
                     st.rerun()
 
         with col2:
-            st.markdown(
-                f'<div style="text-align: center; padding: 8px;">'
-                f'Page {st.session_state.current_page} of {total_pages}'
-                f'</div>',
-                unsafe_allow_html=True
-            )
+            st.caption(f"Page {st.session_state.current_page} of {total_pages}")
 
         with col3:
             if st.session_state.current_page < total_pages:

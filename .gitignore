@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files (uncomment if you want to include data in repo)
+# data/*.csv
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node (if any frontend tooling)
+node_modules/

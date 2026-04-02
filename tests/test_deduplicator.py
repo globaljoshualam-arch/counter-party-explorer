@@ -29,6 +29,7 @@ class TestDeduplicateLeads:
         df = pd.DataFrame({
             "company_name": ["Acme Ltd", "Acme Ltd"],
             "normalized_name": ["acme", "acme"],
+            "country": ["HK", "HK"],
             "volume_usd": [100000, 150000],
             "transaction_count": [5, 8],
             "month": pd.to_datetime(["2026-02-01", "2026-03-01"]),
@@ -45,6 +46,7 @@ class TestDeduplicateLeads:
         df = pd.DataFrame({
             "company_name": ["Acme Ltd", "Acme Ltd", "Acme Ltd"],
             "normalized_name": ["acme", "acme", "acme"],
+            "country": ["HK", "HK", None],
             "volume_usd": [100000, 150000, 200000],
             "transaction_count": [5, 8, 10],
             "month": pd.to_datetime(["2026-03-01", "2026-03-01", "2026-03-01"]),
@@ -60,6 +62,7 @@ class TestDeduplicateLeads:
         df = pd.DataFrame({
             "company_name": ["Acme", "Acme"],
             "normalized_name": ["acme", "acme"],
+            "country": ["US", "US"],
             "volume_usd": [100000, 150000],
             "transaction_count": [5, 8],
             "month": pd.to_datetime(["2026-03-01", "2026-03-01"]),
@@ -74,6 +77,7 @@ class TestDeduplicateLeads:
         df = pd.DataFrame({
             "company_name": ["Acme", "Acme"],
             "normalized_name": ["acme", "acme"],
+            "country": ["SG", None],
             "volume_usd": [100000, 150000],
             "transaction_count": [5, 8],
             "month": pd.to_datetime(["2026-03-01", "2026-03-01"]),
@@ -84,3 +88,18 @@ class TestDeduplicateLeads:
         result = deduplicate_leads(df)
         assert result.iloc[0]["receives"] is True
         assert result.iloc[0]["pays"] is True
+
+    def test_picks_first_non_null_country(self):
+        df = pd.DataFrame({
+            "company_name": ["Acme", "Acme"],
+            "normalized_name": ["acme", "acme"],
+            "country": [None, "JP"],
+            "volume_usd": [100000, 150000],
+            "transaction_count": [5, 8],
+            "month": pd.to_datetime(["2026-03-01", "2026-03-01"]),
+            "client_id": ["c1", "c2"],
+            "currencies": [["USD"], ["JPY"]],
+            "source": ["remitter", "payment"],
+        })
+        result = deduplicate_leads(df)
+        assert result.iloc[0]["country"] == "JP"

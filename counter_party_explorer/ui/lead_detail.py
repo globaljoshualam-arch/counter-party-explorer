@@ -1,7 +1,8 @@
-"""Lead detail view with pitch points and client connections."""
+"""Lead detail view with pitch points and metrics."""
 
 import streamlit as st
 import pandas as pd
+
 from counter_party_explorer.ui.styles import GLOBAL_CSS, get_flag
 
 
@@ -20,8 +21,7 @@ def format_volume(amount):
 
 
 def render_lead_detail(lead: dict, all_data: pd.DataFrame = None):
-    """Render detailed view for a single lead with pitch points."""
-
+    """Render detailed view for a single lead."""
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
     # Back button
@@ -30,78 +30,69 @@ def render_lead_detail(lead: dict, all_data: pd.DataFrame = None):
         st.session_state.selected_lead = None
         st.rerun()
 
-    # Header section
-    score = lead.get("score", 0)
+    # Extract data
+    score = int(lead.get("score", 0))
     company_name = lead.get("company_name", "Unknown Company")
-
-    # Score badge color based on value
-    if score >= 80:
-        score_color = "#22C55E"  # green
-    elif score >= 60:
-        score_color = "#F59E0B"  # amber
-    else:
-        score_color = "#404040"  # gray
-
-    st.markdown(f"""
-    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-        <div style="
-            background: {score_color};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-size: 2rem;
-            font-weight: bold;
-            font-family: 'JetBrains Mono', monospace;
-            min-width: 80px;
-            text-align: center;
-        ">{score}</div>
-        <h1 style="margin: 0; font-size: 2rem; color: #FAFAFA;">{company_name}</h1>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Region and type badges
-    country = lead.get("country") or "Unknown"
+    country = lead.get("country")
+    if not country or not isinstance(country, str):
+        country = "Unknown"
     flag = get_flag(country)
     receives = lead.get("receives", False)
     pays = lead.get("pays", False)
-
-    type_badges = []
-    if receives:
-        type_badges.append('<span style="background: rgba(34, 197, 94, 0.15); color: #4ADE80; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.875rem; font-weight: 600;">RECEIVES</span>')
-    if pays:
-        type_badges.append('<span style="background: rgba(43, 127, 255, 0.15); color: #60A5FA; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.875rem; font-weight: 600;">PAYS</span>')
-
-    st.markdown(f"""
-    <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; align-items: center;">
-        <span style="background: rgba(255, 107, 64, 0.1); color: #FF8A66; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500;">
-            {flag} {country}
-        </span>
-        {' '.join(type_badges)}
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Key metrics
     total_volume = lead.get("total_volume_usd", 0)
     transactions = lead.get("total_transactions", 0)
     client_count = lead.get("client_count", 0)
     currencies = lead.get("currencies", [])
     if isinstance(currencies, str):
-        currencies = [currencies]
+        currencies = [currencies] if currencies else []
     currency_list = ", ".join(currencies[:5]) if currencies else "N/A"
+    latest_month = lead.get("latest_month")
+
+    # Score indicator
+    if score >= 80:
+        score_indicator = "🟢"
+        score_label = "High Potential"
+    elif score >= 60:
+        score_indicator = "🟡"
+        score_label = "Medium Potential"
+    else:
+        score_indicator = "⚪"
+        score_label = "Low Potential"
+
+    # Header
+    st.markdown(f"# {company_name}")
+
+    # Info row
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(f"### {score_indicator} Score: {score}/100")
+        st.caption(score_label)
+    with col2:
+        st.markdown(f"### {flag} {country}")
+        type_badges = []
+        if receives:
+            type_badges.append("📥 Receives")
+        if pays:
+            type_badges.append("📤 Pays")
+        st.caption(" | ".join(type_badges) if type_badges else "No payment type")
+    with col3:
+        st.markdown(f"### {client_count} Clients")
+        st.caption("Airwallex connections")
+
+    st.divider()
+
+    # Key Metrics
+    st.subheader("📊 Key Metrics")
 
     col1, col2, col3, col4 = st.columns(4)
-
     with col1:
-        st.metric("Total Volume", format_volume(total_volume))
-
+        st.metric("Total Volume", format_volume(total_volume), help="Monthly average")
     with col2:
-        st.metric("Transactions", f"{transactions:,}")
-
+        st.metric("Transactions", f"{transactions:,}", help="Per month")
     with col3:
-        st.metric("Client Network", f"{client_count}")
-
+        st.metric("Client Network", f"{client_count}", help="Airwallex clients")
     with col4:
-        st.metric("Currencies", currency_list)
+        st.metric("Currencies", f"{len(currencies)}", help=currency_list)
 
     st.divider()
 
@@ -109,39 +100,118 @@ def render_lead_detail(lead: dict, all_data: pd.DataFrame = None):
     left_col, right_col = st.columns([2, 1])
 
     with left_col:
-        # Pitch Points section
+        # Pitch Points
         st.subheader("💡 Pitch Points")
+        st.caption("Key talking points for outreach")
 
-        # Network connection strength
+        pitch_points = []
+
+        # Network connection pitch
         if client_count >= 2:
-            st.success(f"**Strong Network Connection:** Already transacting with {client_count} of your clients. With Airwallex Pay, settlements would be T+1 instead of T+3.")
+            pitch_points.append({
+                "icon": "🔗",
+                "title": "Strong network connection",
+                "text": f"Already transacting with {client_count} of our clients. With Airwallex Pay, settlements would be T+1 instead of T+3."
+            })
         elif client_count == 1:
-            st.info(f"**Existing Connection:** Currently transacting with 1 of your clients — opportunity to expand relationship.")
+            pitch_points.append({
+                "icon": "🔗",
+                "title": "Existing connection",
+                "text": "Currently transacting with 1 of our clients — opportunity to expand relationship."
+            })
 
-        # Multi-currency opportunity
+        # Multi-currency pitch
         if len(currencies) >= 2:
-            st.info(f"**Multi-Currency Opportunity:** Active in {len(currencies)} currencies ({currency_list}). Could benefit from competitive FX rates and local collection accounts.")
+            pitch_points.append({
+                "icon": "💱",
+                "title": "Multi-currency opportunity",
+                "text": f"Active in {len(currencies)} currencies ({currency_list}). Could benefit from competitive FX rates and local collection accounts."
+            })
 
-        # Dual flow opportunity
+        # Dual flow pitch
         if receives and pays:
-            st.warning("**Dual Flow Opportunity:** Both receives from and pays to your clients — strong candidate for full Airwallex suite.")
+            pitch_points.append({
+                "icon": "↔️",
+                "title": "Dual flow opportunity",
+                "text": "Both receives from and pays to your clients — strong candidate for full Airwallex suite."
+            })
+
+        # Volume pitch
+        if total_volume >= 500_000:
+            pitch_points.append({
+                "icon": "📈",
+                "title": "High volume trader",
+                "text": f"Processing {format_volume(total_volume)}/month through your network. Scale warrants dedicated payment infrastructure."
+            })
+
+        if pitch_points:
+            for p in pitch_points:
+                st.info(f"**{p['icon']} {p['title']}:** {p['text']}")
+        else:
+            st.caption("No specific pitch points available for this lead.")
+
+        # Associated Clients section
+        st.subheader("🏢 Associated Clients")
+        st.caption("Airwallex clients transacting with this counterparty")
+
+        client_details = lead.get("client_details", [])
+        if client_details and len(client_details) > 0:
+            # Header row
+            header_cols = st.columns([3, 1.5, 1, 2])
+            with header_cols[0]:
+                st.markdown("**Client Name**")
+            with header_cols[1]:
+                st.markdown("**Volume**")
+            with header_cols[2]:
+                st.markdown("**Txns**")
+            with header_cols[3]:
+                st.markdown("**BD Manager**")
+
+            st.divider()
+
+            # Client rows
+            for client in client_details:
+                client_cols = st.columns([3, 1.5, 1, 2])
+                with client_cols[0]:
+                    st.markdown(f"{client.get('client_name', 'Unknown')}")
+                with client_cols[1]:
+                    st.markdown(f"**{format_volume(client.get('volume_usd', 0))}**")
+                with client_cols[2]:
+                    st.markdown(f"{client.get('transaction_count', 0):,}")
+                with client_cols[3]:
+                    bd = client.get('bd_manager')
+                    st.markdown(f"{bd if bd else '—'}")
+        else:
+            st.caption("No client data available")
 
         st.divider()
 
-        # Client Connections section
-        st.subheader("📋 Client Connections")
-        st.caption("Your clients who transact with this company")
-        st.info("Client connection details require full transaction data enrichment.")
+        # Currency Activity - always show section
+        st.subheader("💱 Currency Activity")
+        st.caption("Active currency corridors")
+
+        if currencies and len(currencies) > 0:
+            # Display currencies in a grid
+            num_cols = min(6, len(currencies))
+            currency_cols = st.columns(num_cols)
+            for i, ccy in enumerate(currencies[:6]):
+                with currency_cols[i]:
+                    st.markdown(f"**`{ccy}`**")
+
+            if len(currencies) > 6:
+                st.caption(f"+ {len(currencies) - 6} more currencies")
+        else:
+            st.caption("No currency data available")
 
     with right_col:
-        # Actions sidebar
-        st.subheader("Actions")
+        # Actions panel
+        st.subheader("⚡ Actions")
 
         if st.button("📧 Draft Outreach Email", use_container_width=True, type="primary"):
             st.info("Email drafting feature coming in V2")
 
         if st.button("📋 Copy Pitch Points", use_container_width=True):
-            pitch = f"""
+            pitch_text = f"""
 Lead: {company_name}
 Score: {score}/100
 Volume: {format_volume(total_volume)}
@@ -149,7 +219,7 @@ Client connections: {client_count}
 Currencies: {currency_list}
 Type: {'Receives & Pays' if receives and pays else 'Receives' if receives else 'Pays' if pays else 'N/A'}
             """.strip()
-            st.code(pitch)
+            st.code(pitch_text)
 
         if st.button("🔍 Search Web for Info", use_container_width=True):
             search_url = f"https://www.google.com/search?q={company_name.replace(' ', '+')}"
@@ -157,8 +227,10 @@ Type: {'Receives & Pays' if receives and pays else 'Receives' if receives else '
 
         st.divider()
 
-        st.caption("QUICK STATS")
-        st.markdown(f"**Lead Score:** {score} / 100")
-        latest_month = lead.get("latest_month")
-        if latest_month:
-            st.markdown(f"**Data Freshness:** {str(latest_month)[:10]}")
+        # Quick stats
+        st.caption("**Lead Score**")
+        st.progress(score / 100)
+        st.markdown(f"`{score} / 100`")
+
+        st.caption("**Data Freshness**")
+        st.markdown(f"`{str(latest_month)[:10] if latest_month else 'N/A'}`")

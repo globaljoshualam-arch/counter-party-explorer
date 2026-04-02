@@ -62,12 +62,39 @@ def deduplicate_leads(df: pd.DataFrame) -> pd.DataFrame:
         # Get the normalized_name from the group's name (the groupby key)
         normalized_name = group.name if hasattr(group, 'name') else group.index[0]
 
+        # Get first non-null country
+        country_values = group["country"].dropna()
+        country = country_values.iloc[0] if len(country_values) > 0 else None
+
+        # Aggregate client-level details (name, volume, transaction count)
+        client_details = []
+        client_agg = group.groupby("client_id").agg({
+            "client_name": "first",
+            "volume_usd": "sum",
+            "transaction_count": "sum",
+            "bd_manager": "first",
+        }).reset_index()
+
+        for _, client_row in client_agg.iterrows():
+            client_details.append({
+                "client_id": client_row["client_id"],
+                "client_name": client_row["client_name"] if pd.notna(client_row["client_name"]) else "Unknown",
+                "volume_usd": float(client_row["volume_usd"]),
+                "transaction_count": int(client_row["transaction_count"]),
+                "bd_manager": client_row["bd_manager"] if pd.notna(client_row["bd_manager"]) else None,
+            })
+
+        # Sort by volume descending
+        client_details = sorted(client_details, key=lambda x: x["volume_usd"], reverse=True)
+
         result = pd.Series({
             "company_name": group["company_name"].iloc[0],
             "normalized_name": normalized_name,
+            "country": country,
             "total_volume_usd": group["volume_usd"].sum(),
             "total_transactions": group["transaction_count"].sum(),
             "client_count": group["client_id"].nunique(),
+            "client_details": client_details,
             "currencies": sorted(list(all_currencies)),
             "receives": bool("remitter" in group["source"].values),
             "pays": bool("payment" in group["source"].values),
