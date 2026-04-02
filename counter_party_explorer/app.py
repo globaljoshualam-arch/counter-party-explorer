@@ -82,22 +82,12 @@ def check_password():
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def load_preloaded_data():
-    """Load data from repo data folder. Cached for 1 hour."""
-    payment_df = None
-    remitter_df = None
-
-    payment_path = REPO_DATA_DIR / PAYMENT_FILENAME
-    remitter_path = REPO_DATA_DIR / REMITTER_FILENAME
+    """Load pre-processed data from parquet file. Cached for 1 hour."""
+    parquet_path = REPO_DATA_DIR / "leads_processed.parquet"
 
     try:
-        if payment_path.exists():
-            payment_df = pd.read_csv(payment_path)
-
-        if remitter_path.exists():
-            remitter_df = pd.read_csv(remitter_path)
-
-        if payment_df is not None or remitter_df is not None:
-            return process_data(payment_df=payment_df, remitter_df=remitter_df)
+        if parquet_path.exists():
+            return pd.read_parquet(parquet_path)
     except Exception as e:
         st.error(f"Error loading data: {e}")
 
