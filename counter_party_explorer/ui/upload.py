@@ -3,9 +3,9 @@
 import streamlit as st
 import pandas as pd
 
-from ..data.processor import process_data
-from ..data.loader import validate_payment_schema, validate_remitter_schema
-from .styles import GLOBAL_CSS
+from counter_party_explorer.data.processor import process_data
+from counter_party_explorer.data.loader import validate_payment_schema, validate_remitter_schema
+from counter_party_explorer.ui.styles import GLOBAL_CSS
 
 
 def render_upload():

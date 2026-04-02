@@ -3,7 +3,7 @@
 import streamlit as st
 import pandas as pd
 
-from .styles import GLOBAL_CSS, score_badge, type_badges, region_badge, get_flag
+from counter_party_explorer.ui.styles import GLOBAL_CSS, score_badge, type_badges, region_badge, get_flag
 
 
 def format_volume(amount: float) -> str:

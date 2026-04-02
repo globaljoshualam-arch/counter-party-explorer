@@ -1,12 +1,18 @@
 """Main Streamlit application entry point for Counter-Party Lead Explorer."""
 
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports to work
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import streamlit as st
 import pandas as pd
 
-from ui.dashboard import render_dashboard
-from ui.lead_detail import render_lead_detail
-from ui.upload import render_upload
-from ui.styles import GLOBAL_CSS
+from counter_party_explorer.ui.dashboard import render_dashboard
+from counter_party_explorer.ui.lead_detail import render_lead_detail
+from counter_party_explorer.ui.upload import render_upload
+from counter_party_explorer.ui.styles import GLOBAL_CSS
 
 
 def main():
