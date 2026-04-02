@@ -22,6 +22,8 @@ if str(repo_root) not in sys.path:
 from counter_party_explorer.ui.styles import GLOBAL_CSS
 from counter_party_explorer.ui.dashboard import render_dashboard
 from counter_party_explorer.ui.lead_detail import render_lead_detail
+from counter_party_explorer.ui.clients_dashboard import render_clients_dashboard
+from counter_party_explorer.ui.client_detail import render_client_detail
 
 
 def get_data_dir():
@@ -90,6 +92,8 @@ if "view" not in st.session_state:
     st.session_state.view = "dashboard"
 if "selected_lead" not in st.session_state:
     st.session_state.selected_lead = None
+if "selected_client" not in st.session_state:
+    st.session_state.selected_client = None
 
 # Load data
 with st.spinner("Loading leads data..."):
@@ -100,8 +104,50 @@ if len(df) == 0:
     st.error("No data found. Please ensure data/leads_processed.csv exists.")
     st.stop()
 
+# Sidebar navigation
+with st.sidebar:
+    st.markdown("### Navigation")
+
+    # Determine which button should appear "active"
+    current_view = st.session_state.view
+
+    if st.button("🎯 Top Leads", use_container_width=True,
+                 type="primary" if current_view in ["dashboard", "detail"] else "secondary"):
+        st.session_state.view = "dashboard"
+        st.session_state.selected_lead = None
+        st.session_state.selected_client = None
+        # Clear cached clients data to refresh
+        if "clients_df" in st.session_state:
+            del st.session_state.clients_df
+        st.rerun()
+
+    if st.button("👥 Top Clients", use_container_width=True,
+                 type="primary" if current_view in ["clients", "client_detail"] else "secondary"):
+        st.session_state.view = "clients"
+        st.session_state.selected_lead = None
+        st.session_state.selected_client = None
+        st.rerun()
+
+    st.divider()
+
+    # Data info
+    st.caption(f"**{len(df):,}** leads loaded")
+
+    # Unique clients count
+    unique_clients = set()
+    for details in df['client_details']:
+        if isinstance(details, list):
+            for c in details:
+                if c.get('client_id'):
+                    unique_clients.add(c['client_id'])
+    st.caption(f"**{len(unique_clients):,}** unique clients")
+
 # Route to appropriate view
 if st.session_state.view == "detail" and st.session_state.selected_lead:
     render_lead_detail(st.session_state.selected_lead, df)
+elif st.session_state.view == "client_detail" and st.session_state.selected_client:
+    render_client_detail(st.session_state.selected_client)
+elif st.session_state.view == "clients":
+    render_clients_dashboard(df)
 else:
     render_dashboard(df)
