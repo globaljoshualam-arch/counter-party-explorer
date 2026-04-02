@@ -1,0 +1,296 @@
+/**
+ * Airwallex Typography System
+ * ===========================
+ *
+ * Primary: Circular (licensed)
+ * Fallback: DM Sans (Google Fonts)
+ * Chinese: Source Han Sans
+ */
+
+/* ========================================
+   FONT IMPORTS
+   ======================================== */
+
+/*
+ * DM Sans - Google Fonts (Fallback for Circular)
+ * Include in your HTML head or import here:
+ */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+/*
+ * Source Han Sans - For Chinese text
+ * Use Adobe Fonts or local installation
+ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+/* ========================================
+   FONT FACE DECLARATIONS
+   ======================================== */
+
+/*
+ * Circular Font (if you have the license)
+ * Uncomment and update paths as needed:
+ *
+ * @font-face {
+ *   font-family: 'Circular';
+ *   src: url('/fonts/CircularStd-Book.woff2') format('woff2'),
+ *        url('/fonts/CircularStd-Book.woff') format('woff');
+ *   font-weight: 400;
+ *   font-style: normal;
+ *   font-display: swap;
+ * }
+ *
+ * @font-face {
+ *   font-family: 'Circular';
+ *   src: url('/fonts/CircularStd-Medium.woff2') format('woff2'),
+ *        url('/fonts/CircularStd-Medium.woff') format('woff');
+ *   font-weight: 500;
+ *   font-style: normal;
+ *   font-display: swap;
+ * }
+ *
+ * @font-face {
+ *   font-family: 'Circular';
+ *   src: url('/fonts/CircularStd-Bold.woff2') format('woff2'),
+ *        url('/fonts/CircularStd-Bold.woff') format('woff');
+ *   font-weight: 700;
+ *   font-style: normal;
+ *   font-display: swap;
+ * }
+ */
+
+/* ========================================
+   FONT FAMILY TOKENS
+   ======================================== */
+
+:root {
+  /* Primary font stack - Circular with DM Sans fallback */
+  --awx-font-sans: 'Circular', 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Chinese font stack */
+  --awx-font-chinese: 'Source Han Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+
+  /* Monospace for code */
+  --awx-font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Monaco, Consolas, monospace;
+
+  /* ========================================
+     FONT SIZES
+     ======================================== */
+
+  /* Base size: 16px */
+  --awx-text-xs: 0.75rem;      /* 12px */
+  --awx-text-sm: 0.875rem;     /* 14px */
+  --awx-text-base: 1rem;       /* 16px */
+  --awx-text-lg: 1.125rem;     /* 18px */
+  --awx-text-xl: 1.25rem;      /* 20px */
+  --awx-text-2xl: 1.5rem;      /* 24px */
+  --awx-text-3xl: 1.875rem;    /* 30px */
+  --awx-text-4xl: 2.25rem;     /* 36px */
+  --awx-text-5xl: 3rem;        /* 48px */
+  --awx-text-6xl: 3.75rem;     /* 60px */
+  --awx-text-7xl: 4.5rem;      /* 72px */
+  --awx-text-8xl: 6rem;        /* 96px */
+
+  /* ========================================
+     FONT WEIGHTS
+     ======================================== */
+
+  --awx-font-light: 300;
+  --awx-font-normal: 400;
+  --awx-font-medium: 500;
+  --awx-font-semibold: 600;
+  --awx-font-bold: 700;
+
+  /* ========================================
+     LINE HEIGHTS
+     ======================================== */
+
+  --awx-leading-none: 1;
+  --awx-leading-tight: 1.2;
+  --awx-leading-snug: 1.375;
+  --awx-leading-normal: 1.5;
+  --awx-leading-relaxed: 1.625;
+  --awx-leading-loose: 2;
+
+  /* ========================================
+     LETTER SPACING
+     ======================================== */
+
+  --awx-tracking-tighter: -0.05em;
+  --awx-tracking-tight: -0.025em;
+  --awx-tracking-normal: 0;
+  --awx-tracking-wide: 0.025em;
+  --awx-tracking-wider: 0.05em;
+  --awx-tracking-widest: 0.1em;
+}
+
+/* ========================================
+   TYPOGRAPHY PRESETS
+   ======================================== */
+
+/* Display - Hero headlines */
+.awx-display-1 {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-7xl);
+  font-weight: var(--awx-font-bold);
+  line-height: var(--awx-leading-tight);
+  letter-spacing: var(--awx-tracking-tight);
+}
+
+.awx-display-2 {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-6xl);
+  font-weight: var(--awx-font-bold);
+  line-height: var(--awx-leading-tight);
+  letter-spacing: var(--awx-tracking-tight);
+}
+
+/* Headings - Page and section headers */
+.awx-heading-1,
+h1.awx {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-4xl);
+  font-weight: var(--awx-font-bold);
+  line-height: var(--awx-leading-tight);
+  letter-spacing: var(--awx-tracking-tight);
+}
+
+.awx-heading-2,
+h2.awx {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-3xl);
+  font-weight: var(--awx-font-semibold);
+  line-height: var(--awx-leading-snug);
+  letter-spacing: var(--awx-tracking-tight);
+}
+
+.awx-heading-3,
+h3.awx {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-2xl);
+  font-weight: var(--awx-font-semibold);
+  line-height: var(--awx-leading-snug);
+}
+
+.awx-heading-4,
+h4.awx {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-xl);
+  font-weight: var(--awx-font-semibold);
+  line-height: var(--awx-leading-snug);
+}
+
+.awx-heading-5,
+h5.awx {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-lg);
+  font-weight: var(--awx-font-medium);
+  line-height: var(--awx-leading-normal);
+}
+
+.awx-heading-6,
+h6.awx {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-base);
+  font-weight: var(--awx-font-medium);
+  line-height: var(--awx-leading-normal);
+}
+
+/* Body text */
+.awx-body-lg {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-lg);
+  font-weight: var(--awx-font-normal);
+  line-height: var(--awx-leading-relaxed);
+}
+
+.awx-body,
+.awx-body-base {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-base);
+  font-weight: var(--awx-font-normal);
+  line-height: var(--awx-leading-normal);
+}
+
+.awx-body-sm {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-sm);
+  font-weight: var(--awx-font-normal);
+  line-height: var(--awx-leading-normal);
+}
+
+/* Captions and labels */
+.awx-caption {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-xs);
+  font-weight: var(--awx-font-normal);
+  line-height: var(--awx-leading-normal);
+  letter-spacing: var(--awx-tracking-wide);
+}
+
+.awx-overline {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-xs);
+  font-weight: var(--awx-font-semibold);
+  line-height: var(--awx-leading-normal);
+  letter-spacing: var(--awx-tracking-widest);
+  text-transform: uppercase;
+}
+
+.awx-label {
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-sm);
+  font-weight: var(--awx-font-medium);
+  line-height: var(--awx-leading-normal);
+}
+
+/* Code */
+.awx-code {
+  font-family: var(--awx-font-mono);
+  font-size: var(--awx-text-sm);
+  line-height: var(--awx-leading-relaxed);
+}
+
+/* ========================================
+   RESPONSIVE TYPOGRAPHY
+   ======================================== */
+
+@media (max-width: 768px) {
+  .awx-display-1 {
+    font-size: var(--awx-text-5xl);
+  }
+
+  .awx-display-2 {
+    font-size: var(--awx-text-4xl);
+  }
+
+  .awx-heading-1,
+  h1.awx {
+    font-size: var(--awx-text-3xl);
+  }
+
+  .awx-heading-2,
+  h2.awx {
+    font-size: var(--awx-text-2xl);
+  }
+
+  .awx-heading-3,
+  h3.awx {
+    font-size: var(--awx-text-xl);
+  }
+}
+
+/* ========================================
+   CHINESE TEXT HANDLING
+   ======================================== */
+
+:lang(zh),
+:lang(zh-CN),
+:lang(zh-TW),
+:lang(zh-HK) {
+  font-family: var(--awx-font-chinese);
+}
+
+.awx-chinese {
+  font-family: var(--awx-font-chinese);
+}

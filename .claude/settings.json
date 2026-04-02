@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash",
+      "WebSearch",
+      "Bash(npm create:*)",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(npm install:*)",
+      "Read(//Users/joshua.lam/.claude/skills/**)",
+      "Bash(mkdir -p ~/.claude/skills)",
+      "Bash(cat ~/.claude/skills/airwallex-brand-guidelines/*.md)",
+      "Edit(~/.claude/skills/airwallex-design-standard/**)",
+      "Bash(pytest tests/test_loader.py -v)",
+      "Bash(python -m pytest tests/test_loader.py -v)",
+      "Bash(pytest tests/test_filter.py -v)"
+    ],
+    "additionalDirectories": [
+      "/Users/joshua.lam/.claude/skills"
+    ]
+  }
+}

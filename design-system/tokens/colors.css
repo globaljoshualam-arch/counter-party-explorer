@@ -1,0 +1,236 @@
+/**
+ * Airwallex Color System
+ * =====================
+ *
+ * Primary: Orange (Business Accounts / General Brand)
+ * Product categories have distinct color identities.
+ */
+
+:root {
+  /* ========================================
+     BRAND COLORS - PRIMARY
+     ======================================== */
+
+  /* Airwallex Orange - Primary Brand Color */
+  --awx-orange-50: #FFF7F5;
+  --awx-orange-100: #FFEBE5;
+  --awx-orange-200: #FFD4C7;
+  --awx-orange-300: #FFB199;
+  --awx-orange-400: #FF8A66;
+  --awx-orange-500: #FF6B40;  /* Primary brand orange */
+  --awx-orange-600: #F54D1F;
+  --awx-orange-700: #D93D12;
+  --awx-orange-800: #B33210;
+  --awx-orange-900: #8F2A0F;
+
+  /* Coral gradient end (for gradients with orange) */
+  --awx-coral-400: #FF8066;
+  --awx-coral-500: #FF6B5B;
+  --awx-coral-600: #F55046;
+
+  /* ========================================
+     PRODUCT CATEGORY COLORS
+     ======================================== */
+
+  /* Business Accounts - Orange (Primary) */
+  --awx-business-accounts: var(--awx-orange-500);
+  --awx-business-accounts-light: var(--awx-orange-100);
+  --awx-business-accounts-dark: var(--awx-orange-700);
+
+  /* Spend - Pink/Magenta */
+  --awx-spend-50: #FFF5F8;
+  --awx-spend-100: #FFE5ED;
+  --awx-spend-200: #FFCCD9;
+  --awx-spend-300: #FFA3BC;
+  --awx-spend-400: #FF7A9E;
+  --awx-spend-500: #FF5082;  /* Spend primary */
+  --awx-spend-600: #E6366A;
+  --awx-spend-700: #C42555;
+  --awx-spend-800: #A11F47;
+  --awx-spend-900: #7D1A3A;
+
+  /* Payments - Blue */
+  --awx-payments-50: #F0F7FF;
+  --awx-payments-100: #E0EFFF;
+  --awx-payments-200: #B8DBFF;
+  --awx-payments-300: #85C1FF;
+  --awx-payments-400: #52A3FF;
+  --awx-payments-500: #2B7FFF;  /* Payments primary */
+  --awx-payments-600: #1A5FDB;
+  --awx-payments-700: #1347B0;
+  --awx-payments-800: #0F3785;
+  --awx-payments-900: #0B2860;
+
+  /* Platform APIs & Embedded Finance - Purple/Magenta */
+  --awx-platform-50: #FAF5FF;
+  --awx-platform-100: #F3E8FF;
+  --awx-platform-200: #E9D5FF;
+  --awx-platform-300: #D8B4FE;
+  --awx-platform-400: #C084FC;
+  --awx-platform-500: #A855F7;  /* Platform primary */
+  --awx-platform-600: #9333EA;
+  --awx-platform-700: #7E22CE;
+  --awx-platform-800: #6B21A8;
+  --awx-platform-900: #581C87;
+
+  /* ========================================
+     NEUTRAL COLORS
+     ======================================== */
+
+  /* Grays - For UI elements */
+  --awx-gray-50: #FAFAFA;
+  --awx-gray-100: #F5F5F5;
+  --awx-gray-200: #E5E5E5;
+  --awx-gray-300: #D4D4D4;
+  --awx-gray-400: #A3A3A3;
+  --awx-gray-500: #737373;
+  --awx-gray-600: #525252;
+  --awx-gray-700: #404040;
+  --awx-gray-800: #262626;
+  --awx-gray-900: #171717;
+  --awx-gray-950: #0A0A0A;
+
+  /* Pure Black & White */
+  --awx-white: #FFFFFF;
+  --awx-black: #000000;
+
+  /* ========================================
+     SEMANTIC COLORS
+     ======================================== */
+
+  /* Success */
+  --awx-success-50: #F0FDF4;
+  --awx-success-100: #DCFCE7;
+  --awx-success-500: #22C55E;
+  --awx-success-600: #16A34A;
+  --awx-success-700: #15803D;
+
+  /* Warning */
+  --awx-warning-50: #FFFBEB;
+  --awx-warning-100: #FEF3C7;
+  --awx-warning-500: #F59E0B;
+  --awx-warning-600: #D97706;
+  --awx-warning-700: #B45309;
+
+  /* Error */
+  --awx-error-50: #FEF2F2;
+  --awx-error-100: #FEE2E2;
+  --awx-error-500: #EF4444;
+  --awx-error-600: #DC2626;
+  --awx-error-700: #B91C1C;
+
+  /* Info */
+  --awx-info-50: #EFF6FF;
+  --awx-info-100: #DBEAFE;
+  --awx-info-500: #3B82F6;
+  --awx-info-600: #2563EB;
+  --awx-info-700: #1D4ED8;
+
+  /* ========================================
+     GRADIENTS
+     ======================================== */
+
+  /* Business Accounts Gradient */
+  --awx-gradient-business: linear-gradient(135deg, var(--awx-orange-500) 0%, var(--awx-coral-500) 100%);
+
+  /* Spend Gradient */
+  --awx-gradient-spend: linear-gradient(135deg, var(--awx-spend-500) 0%, var(--awx-spend-400) 100%);
+
+  /* Payments Gradient */
+  --awx-gradient-payments: linear-gradient(135deg, var(--awx-payments-500) 0%, var(--awx-payments-400) 100%);
+
+  /* Platform Gradient */
+  --awx-gradient-platform: linear-gradient(135deg, var(--awx-platform-500) 0%, var(--awx-spend-500) 100%);
+
+  /* Hero/Marketing Gradient */
+  --awx-gradient-hero: linear-gradient(135deg, var(--awx-orange-500) 0%, var(--awx-coral-400) 50%, var(--awx-spend-400) 100%);
+
+  /* ========================================
+     BACKGROUND COLORS
+     ======================================== */
+
+  --awx-bg-primary: var(--awx-white);
+  --awx-bg-secondary: var(--awx-gray-50);
+  --awx-bg-tertiary: var(--awx-gray-100);
+  --awx-bg-inverse: var(--awx-gray-900);
+  --awx-bg-brand: var(--awx-orange-500);
+  --awx-bg-brand-subtle: var(--awx-orange-50);
+
+  /* ========================================
+     TEXT COLORS
+     ======================================== */
+
+  --awx-text-primary: var(--awx-gray-900);
+  --awx-text-secondary: var(--awx-gray-600);
+  --awx-text-tertiary: var(--awx-gray-500);
+  --awx-text-disabled: var(--awx-gray-400);
+  --awx-text-inverse: var(--awx-white);
+  --awx-text-brand: var(--awx-orange-600);
+  --awx-text-link: var(--awx-orange-600);
+  --awx-text-link-hover: var(--awx-orange-700);
+
+  /* ========================================
+     BORDER COLORS
+     ======================================== */
+
+  --awx-border-default: var(--awx-gray-200);
+  --awx-border-subtle: var(--awx-gray-100);
+  --awx-border-strong: var(--awx-gray-300);
+  --awx-border-brand: var(--awx-orange-500);
+  --awx-border-focus: var(--awx-orange-500);
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+[data-theme="dark"],
+.dark {
+  --awx-bg-primary: var(--awx-gray-950);
+  --awx-bg-secondary: var(--awx-gray-900);
+  --awx-bg-tertiary: var(--awx-gray-800);
+  --awx-bg-inverse: var(--awx-white);
+  --awx-bg-brand-subtle: rgba(255, 107, 64, 0.15);
+
+  --awx-text-primary: var(--awx-gray-50);
+  --awx-text-secondary: var(--awx-gray-400);
+  --awx-text-tertiary: var(--awx-gray-500);
+  --awx-text-disabled: var(--awx-gray-600);
+  --awx-text-inverse: var(--awx-gray-900);
+  --awx-text-brand: var(--awx-orange-400);
+  --awx-text-link: var(--awx-orange-400);
+  --awx-text-link-hover: var(--awx-orange-300);
+
+  --awx-border-default: var(--awx-gray-700);
+  --awx-border-subtle: var(--awx-gray-800);
+  --awx-border-strong: var(--awx-gray-600);
+}
+
+/* ========================================
+   COLOR UTILITY CLASSES
+   ======================================== */
+
+/* Product Category Themes */
+.awx-theme-business-accounts {
+  --awx-product-color: var(--awx-business-accounts);
+  --awx-product-color-light: var(--awx-orange-100);
+  --awx-product-gradient: var(--awx-gradient-business);
+}
+
+.awx-theme-spend {
+  --awx-product-color: var(--awx-spend-500);
+  --awx-product-color-light: var(--awx-spend-100);
+  --awx-product-gradient: var(--awx-gradient-spend);
+}
+
+.awx-theme-payments {
+  --awx-product-color: var(--awx-payments-500);
+  --awx-product-color-light: var(--awx-payments-100);
+  --awx-product-gradient: var(--awx-gradient-payments);
+}
+
+.awx-theme-platform {
+  --awx-product-color: var(--awx-platform-500);
+  --awx-product-color-light: var(--awx-platform-100);
+  --awx-product-gradient: var(--awx-gradient-platform);
+}

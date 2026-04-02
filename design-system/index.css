@@ -1,0 +1,93 @@
+/**
+ * Airwallex Design System
+ * =======================
+ *
+ * Main entry point. Import this file to get all design tokens.
+ *
+ * Usage:
+ *   @import './design-system/index.css';
+ *
+ * Or in JS:
+ *   import './design-system/index.css';
+ */
+
+@import './tokens/colors.css';
+@import './tokens/typography.css';
+@import './tokens/spacing.css';
+
+/* ========================================
+   BASE STYLES
+   ======================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  font-family: var(--awx-font-sans);
+  font-size: var(--awx-text-base);
+  line-height: var(--awx-leading-normal);
+  color: var(--awx-text-primary);
+  background: var(--awx-bg-primary);
+}
+
+/* ========================================
+   FOCUS STYLES
+   ======================================== */
+
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--awx-orange-500);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   SELECTION
+   ======================================== */
+
+::selection {
+  background: var(--awx-orange-200);
+  color: var(--awx-gray-900);
+}
+
+/* ========================================
+   LINKS
+   ======================================== */
+
+a {
+  color: var(--awx-text-link);
+  text-decoration: none;
+  transition: color var(--awx-duration-150) var(--awx-ease-out);
+}
+
+a:hover {
+  color: var(--awx-text-link-hover);
+  text-decoration: underline;
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,202 @@
+/**
+ * Airwallex Spacing & Layout System
+ * ==================================
+ *
+ * Based on 4px base unit with 8px primary increment
+ */
+
+:root {
+  /* ========================================
+     SPACING SCALE
+     ======================================== */
+
+  /* Base unit: 4px */
+  --awx-space-0: 0;
+  --awx-space-px: 1px;
+  --awx-space-0-5: 0.125rem;   /* 2px */
+  --awx-space-1: 0.25rem;      /* 4px */
+  --awx-space-1-5: 0.375rem;   /* 6px */
+  --awx-space-2: 0.5rem;       /* 8px */
+  --awx-space-2-5: 0.625rem;   /* 10px */
+  --awx-space-3: 0.75rem;      /* 12px */
+  --awx-space-3-5: 0.875rem;   /* 14px */
+  --awx-space-4: 1rem;         /* 16px */
+  --awx-space-5: 1.25rem;      /* 20px */
+  --awx-space-6: 1.5rem;       /* 24px */
+  --awx-space-7: 1.75rem;      /* 28px */
+  --awx-space-8: 2rem;         /* 32px */
+  --awx-space-9: 2.25rem;      /* 36px */
+  --awx-space-10: 2.5rem;      /* 40px */
+  --awx-space-11: 2.75rem;     /* 44px */
+  --awx-space-12: 3rem;        /* 48px */
+  --awx-space-14: 3.5rem;      /* 56px */
+  --awx-space-16: 4rem;        /* 64px */
+  --awx-space-20: 5rem;        /* 80px */
+  --awx-space-24: 6rem;        /* 96px */
+  --awx-space-28: 7rem;        /* 112px */
+  --awx-space-32: 8rem;        /* 128px */
+  --awx-space-36: 9rem;        /* 144px */
+  --awx-space-40: 10rem;       /* 160px */
+  --awx-space-44: 11rem;       /* 176px */
+  --awx-space-48: 12rem;       /* 192px */
+  --awx-space-52: 13rem;       /* 208px */
+  --awx-space-56: 14rem;       /* 224px */
+  --awx-space-60: 15rem;       /* 240px */
+  --awx-space-64: 16rem;       /* 256px */
+  --awx-space-72: 18rem;       /* 288px */
+  --awx-space-80: 20rem;       /* 320px */
+  --awx-space-96: 24rem;       /* 384px */
+
+  /* ========================================
+     SEMANTIC SPACING
+     ======================================== */
+
+  /* Component internal spacing */
+  --awx-gap-xs: var(--awx-space-1);     /* 4px - Tight inline spacing */
+  --awx-gap-sm: var(--awx-space-2);     /* 8px - Default inline spacing */
+  --awx-gap-md: var(--awx-space-4);     /* 16px - Card padding, form gaps */
+  --awx-gap-lg: var(--awx-space-6);     /* 24px - Section padding */
+  --awx-gap-xl: var(--awx-space-8);     /* 32px - Large section gaps */
+  --awx-gap-2xl: var(--awx-space-12);   /* 48px - Page section spacing */
+  --awx-gap-3xl: var(--awx-space-16);   /* 64px - Major section breaks */
+
+  /* Page layout spacing */
+  --awx-section-gap: var(--awx-space-24);      /* 96px - Between major sections */
+  --awx-container-padding: var(--awx-space-6); /* 24px - Container side padding */
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+
+  --awx-radius-none: 0;
+  --awx-radius-sm: 0.25rem;    /* 4px */
+  --awx-radius-md: 0.5rem;     /* 8px */
+  --awx-radius-lg: 0.75rem;    /* 12px */
+  --awx-radius-xl: 1rem;       /* 16px */
+  --awx-radius-2xl: 1.5rem;    /* 24px */
+  --awx-radius-3xl: 2rem;      /* 32px */
+  --awx-radius-full: 9999px;   /* Pill shape */
+
+  /* ========================================
+     CONTAINER WIDTHS
+     ======================================== */
+
+  --awx-container-xs: 20rem;    /* 320px */
+  --awx-container-sm: 24rem;    /* 384px */
+  --awx-container-md: 28rem;    /* 448px */
+  --awx-container-lg: 32rem;    /* 512px */
+  --awx-container-xl: 36rem;    /* 576px */
+  --awx-container-2xl: 42rem;   /* 672px */
+  --awx-container-3xl: 48rem;   /* 768px */
+  --awx-container-4xl: 56rem;   /* 896px */
+  --awx-container-5xl: 64rem;   /* 1024px */
+  --awx-container-6xl: 72rem;   /* 1152px */
+  --awx-container-7xl: 80rem;   /* 1280px */
+  --awx-container-prose: 65ch;  /* Optimal reading width */
+
+  /* ========================================
+     BREAKPOINTS (for reference)
+     ======================================== */
+
+  /* Use these in media queries:
+   * --awx-screen-sm: 640px
+   * --awx-screen-md: 768px
+   * --awx-screen-lg: 1024px
+   * --awx-screen-xl: 1280px
+   * --awx-screen-2xl: 1536px
+   */
+
+  /* ========================================
+     SHADOWS
+     ======================================== */
+
+  --awx-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --awx-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --awx-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --awx-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --awx-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --awx-shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --awx-shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+
+  /* Colored shadows for brand elements */
+  --awx-shadow-orange: 0 10px 40px -10px rgba(255, 107, 64, 0.4);
+  --awx-shadow-orange-lg: 0 20px 60px -15px rgba(255, 107, 64, 0.5);
+
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+
+  --awx-z-auto: auto;
+  --awx-z-0: 0;
+  --awx-z-10: 10;        /* Elevated content */
+  --awx-z-20: 20;        /* Dropdowns */
+  --awx-z-30: 30;        /* Fixed elements */
+  --awx-z-40: 40;        /* Sticky headers */
+  --awx-z-50: 50;        /* Modals backdrop */
+  --awx-z-60: 60;        /* Modals */
+  --awx-z-70: 70;        /* Popovers, tooltips */
+  --awx-z-80: 80;        /* Notifications */
+  --awx-z-90: 90;        /* Loading overlays */
+  --awx-z-max: 9999;     /* Maximum (use sparingly) */
+
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+
+  /* Durations */
+  --awx-duration-75: 75ms;
+  --awx-duration-100: 100ms;
+  --awx-duration-150: 150ms;
+  --awx-duration-200: 200ms;
+  --awx-duration-300: 300ms;
+  --awx-duration-500: 500ms;
+  --awx-duration-700: 700ms;
+  --awx-duration-1000: 1000ms;
+
+  /* Easings */
+  --awx-ease-linear: linear;
+  --awx-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --awx-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --awx-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --awx-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --awx-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* Common transitions */
+  --awx-transition-colors: color, background-color, border-color, text-decoration-color, fill, stroke;
+  --awx-transition-opacity: opacity;
+  --awx-transition-shadow: box-shadow;
+  --awx-transition-transform: transform;
+  --awx-transition-all: all;
+}
+
+/* ========================================
+   CONTAINER CLASSES
+   ======================================== */
+
+.awx-container {
+  width: 100%;
+  max-width: var(--awx-container-7xl);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--awx-container-padding);
+  padding-right: var(--awx-container-padding);
+}
+
+.awx-container-sm {
+  max-width: var(--awx-container-5xl);
+}
+
+.awx-container-prose {
+  max-width: var(--awx-container-prose);
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --awx-container-padding: var(--awx-space-4);
+    --awx-section-gap: var(--awx-space-16);
+  }
+}

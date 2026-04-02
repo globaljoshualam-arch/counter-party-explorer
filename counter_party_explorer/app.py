@@ -57,10 +57,10 @@ def main():
     if st.session_state.view == "upload":
         render_upload()
     elif st.session_state.view == "detail" and st.session_state.selected_lead is not None:
-        render_lead_detail()
+        render_lead_detail(st.session_state.selected_lead, st.session_state.leads_df)
     elif st.session_state.view == "dashboard":
         if len(st.session_state.leads_df) > 0:
-            render_dashboard()
+            render_dashboard(st.session_state.leads_df)
         else:
             st.warning("⚠️ No data loaded. Please upload data first.")
             if st.button("Go to Upload"):

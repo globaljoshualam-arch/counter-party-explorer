@@ -1,0 +1,126 @@
+<h2>Main Dashboard Layout</h2>
+<p class="subtitle">How should the lead list be structured?</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1a1a2e;padding:16px;border-radius:8px;font-family:monospace;font-size:11px;color:#e0e0e0;">
+        <div style="background:#2d2d44;padding:8px;margin-bottom:12px;border-radius:4px;display:flex;gap:12px;align-items:center;">
+          <span style="color:#888;">🔍 Search company...</span>
+          <span style="background:#3d3d5c;padding:4px 8px;border-radius:4px;font-size:10px;">Type: All ▾</span>
+          <span style="background:#3d3d5c;padding:4px 8px;border-radius:4px;font-size:10px;">Currency: All ▾</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div style="background:#2d2d44;padding:12px;border-radius:6px;border-left:3px solid #4CAF50;">
+            <div style="font-weight:bold;margin-bottom:4px;">Acme Corp</div>
+            <div style="font-size:10px;color:#888;">Score: 94 · $2.3M/mo</div>
+            <div style="margin-top:6px;">
+              <span style="background:#4CAF50;color:white;padding:2px 6px;border-radius:3px;font-size:9px;">RECEIVES</span>
+              <span style="background:#2196F3;color:white;padding:2px 6px;border-radius:3px;font-size:9px;">PAYS</span>
+            </div>
+          </div>
+          <div style="background:#2d2d44;padding:12px;border-radius:6px;border-left:3px solid #4CAF50;">
+            <div style="font-weight:bold;margin-bottom:4px;">GlobalTech Ltd</div>
+            <div style="font-size:10px;color:#888;">Score: 87 · $1.8M/mo</div>
+            <div style="margin-top:6px;">
+              <span style="background:#4CAF50;color:white;padding:2px 6px;border-radius:3px;font-size:9px;">RECEIVES</span>
+            </div>
+          </div>
+          <div style="background:#2d2d44;padding:12px;border-radius:6px;border-left:3px solid #2196F3;">
+            <div style="font-weight:bold;margin-bottom:4px;">Pacific Trading</div>
+            <div style="font-size:10px;color:#888;">Score: 82 · $1.2M/mo</div>
+            <div style="margin-top:6px;">
+              <span style="background:#2196F3;color:white;padding:2px 6px;border-radius:3px;font-size:9px;">PAYS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Card Grid</h3>
+      <p>Visual cards with key metrics at a glance. Good for scanning, less data density.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1a1a2e;padding:16px;border-radius:8px;font-family:monospace;font-size:11px;color:#e0e0e0;">
+        <div style="background:#2d2d44;padding:8px;margin-bottom:12px;border-radius:4px;display:flex;gap:12px;align-items:center;">
+          <span style="color:#888;">🔍 Search company...</span>
+          <span style="background:#3d3d5c;padding:4px 8px;border-radius:4px;font-size:10px;">Filters ▾</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:10px;">
+          <tr style="background:#3d3d5c;text-align:left;">
+            <th style="padding:6px;">Company</th>
+            <th style="padding:6px;">Score</th>
+            <th style="padding:6px;">Volume</th>
+            <th style="padding:6px;">Clients</th>
+            <th style="padding:6px;">Type</th>
+          </tr>
+          <tr style="border-bottom:1px solid #3d3d5c;">
+            <td style="padding:6px;font-weight:bold;">Acme Corp</td>
+            <td style="padding:6px;color:#4CAF50;">94</td>
+            <td style="padding:6px;">$2.3M</td>
+            <td style="padding:6px;">5</td>
+            <td style="padding:6px;"><span style="background:#4CAF50;color:white;padding:1px 4px;border-radius:2px;font-size:8px;">R</span> <span style="background:#2196F3;color:white;padding:1px 4px;border-radius:2px;font-size:8px;">P</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #3d3d5c;">
+            <td style="padding:6px;font-weight:bold;">GlobalTech Ltd</td>
+            <td style="padding:6px;color:#4CAF50;">87</td>
+            <td style="padding:6px;">$1.8M</td>
+            <td style="padding:6px;">3</td>
+            <td style="padding:6px;"><span style="background:#4CAF50;color:white;padding:1px 4px;border-radius:2px;font-size:8px;">R</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid #3d3d5c;">
+            <td style="padding:6px;font-weight:bold;">Pacific Trading</td>
+            <td style="padding:6px;color:#FFC107;">82</td>
+            <td style="padding:6px;">$1.2M</td>
+            <td style="padding:6px;">2</td>
+            <td style="padding:6px;"><span style="background:#2196F3;color:white;padding:1px 4px;border-radius:2px;font-size:8px;">P</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Data Table</h3>
+      <p>Dense, sortable table. Maximum data per screen. Click row for details.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div style="background:#1a1a2e;padding:16px;border-radius:8px;font-family:monospace;font-size:11px;color:#e0e0e0;">
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:12px;">
+          <div style="background:#2d2d44;padding:12px;border-radius:6px;">
+            <div style="font-size:10px;color:#888;margin-bottom:8px;">FILTERS</div>
+            <div style="margin-bottom:8px;padding:6px;background:#3d3d5c;border-radius:4px;font-size:10px;">🔍 Search...</div>
+            <div style="font-size:9px;color:#888;margin-bottom:4px;">Type</div>
+            <div style="font-size:10px;margin-bottom:8px;">☑ Receivers ☑ Payers</div>
+            <div style="font-size:9px;color:#888;margin-bottom:4px;">Score Range</div>
+            <div style="background:#4CAF50;height:4px;border-radius:2px;margin-bottom:8px;"></div>
+            <div style="font-size:9px;color:#888;margin-bottom:4px;">Currency</div>
+            <div style="font-size:10px;">☑ USD ☑ HKD ☐ EUR</div>
+          </div>
+          <div>
+            <div style="background:#2d2d44;padding:8px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;">
+              <span style="font-weight:bold;">Acme Corp</span>
+              <span style="color:#4CAF50;">Score: 94</span>
+            </div>
+            <div style="background:#2d2d44;padding:8px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;">
+              <span style="font-weight:bold;">GlobalTech Ltd</span>
+              <span style="color:#4CAF50;">Score: 87</span>
+            </div>
+            <div style="background:#2d2d44;padding:8px;border-radius:6px;display:flex;justify-content:space-between;">
+              <span style="font-weight:bold;">Pacific Trading</span>
+              <span style="color:#FFC107;">Score: 82</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Sidebar Filters + List</h3>
+      <p>Persistent filter panel on left, lead list on right. Good for power users.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lead Detail — Acme Global Trading Ltd</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --awx-orange-50: #FFF7F5;
+      --awx-orange-100: #FFEBE5;
+      --awx-orange-400: #FF8A66;
+      --awx-orange-500: #FF6B40;
+      --awx-orange-600: #F54D1F;
+      --awx-payments-500: #2B7FFF;
+      --awx-success-500: #22C55E;
+      --awx-success-100: #DCFCE7;
+      --awx-warning-500: #F59E0B;
+      --awx-error-500: #EF4444;
+      --awx-gray-50: #FAFAFA;
+      --awx-gray-100: #F5F5F5;
+      --awx-gray-200: #E5E5E5;
+      --awx-gray-300: #D4D4D4;
+      --awx-gray-400: #A3A3A3;
+      --awx-gray-500: #737373;
+      --awx-gray-600: #525252;
+      --awx-gray-700: #404040;
+      --awx-gray-800: #262626;
+      --awx-gray-900: #171717;
+      --awx-gray-950: #0A0A0A;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--awx-gray-950);
+      color: var(--awx-gray-100);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar - Same as list */
+    .sidebar {
+      background: var(--awx-gray-900);
+      border-right: 1px solid var(--awx-gray-800);
+      padding: 24px 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+      margin-bottom: 36px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--awx-orange-500), var(--awx-orange-400));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: white;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--awx-gray-100);
+    }
+
+    .nav-section { margin-bottom: 28px; }
+
+    .nav-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--awx-gray-500);
+      padding: 0 12px;
+      margin-bottom: 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--awx-gray-400);
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .nav-item:hover {
+      background: var(--awx-gray-800);
+      color: var(--awx-gray-100);
+    }
+
+    .nav-item.active {
+      background: var(--awx-orange-500);
+      color: white;
+    }
+
+    /* Main */
+    .main {
+      padding: 28px 36px;
+      overflow-y: auto;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--awx-gray-400);
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: color 150ms;
+    }
+
+    .back-link:hover {
+      color: var(--awx-orange-400);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 32px;
+    }
+
+    .header-left {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .score-large {
+      width: 72px;
+      height: 72px;
+      background: var(--awx-success-500);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .score-large .number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .score-large .label {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+    }
+
+    .header-info h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--awx-gray-50);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .region-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--awx-orange-400);
+      background: rgba(255, 107, 64, 0.1);
+      padding: 6px 14px;
+      border-radius: 8px;
+    }
+
+    .type-badges {
+      display: flex;
+      gap: 8px;
+    }
+
+    .type-badge {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+
+    .type-badge.receives {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
+    }
+
+    .type-badge.pays {
+      background: rgba(43, 127, 255, 0.15);
+      color: #60A5FA;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 150ms;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-secondary {
+      background: var(--awx-gray-800);
+      color: var(--awx-gray-300);
+      border: 1px solid var(--awx-gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: var(--awx-gray-700);
+    }
+
+    .btn-primary {
+      background: var(--awx-orange-500);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--awx-orange-600);
+      box-shadow: 0 10px 40px -10px rgba(255, 107, 64, 0.4);
+    }
+
+    /* Grid Layout */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--awx-gray-900);
+      border: 1px solid var(--awx-gray-800);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--awx-gray-100);
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--awx-gray-500);
+      margin-top: 4px;
+    }
+
+    /* Key Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .metric {
+      background: var(--awx-gray-800);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--awx-gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .metric-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--awx-gray-50);
+      margin-top: 6px;
+    }
+
+    .metric-value.orange { color: var(--awx-orange-400); }
+    .metric-value.green { color: var(--awx-success-500); }
+
+    .metric-sub {
+      font-size: 12px;
+      color: var(--awx-gray-500);
+      margin-top: 4px;
+    }
+
+    /* Client Connections */
+    .connection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .connection {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--awx-gray-800);
+      border-radius: 12px;
+      transition: all 150ms;
+    }
+
+    .connection:hover {
+      background: var(--awx-gray-700);
+    }
+
+    .connection-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .connection-avatar {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--awx-orange-500), var(--awx-orange-400));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: white;
+    }
+
+    .connection-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--awx-gray-100);
+    }
+
+    .connection-bd {
+      font-size: 13px;
+      color: var(--awx-gray-500);
+      margin-top: 2px;
+    }
+
+    .connection-stats {
+      text-align: right;
+    }
+
+    .connection-volume {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--awx-gray-100);
+    }
+
+    .connection-freq {
+      font-size: 12px;
+      color: var(--awx-gray-500);
+      margin-top: 2px;
+    }
+
+    .connection-type {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-left: 12px;
+    }
+
+    .connection-type.recv {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
+    }
+
+    .connection-type.pay {
+      background: rgba(43, 127, 255, 0.15);
+      color: #60A5FA;
+    }
+
+    /* Transaction History */
+    .history-chart {
+      height: 140px;
+      background: var(--awx-gray-800);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: var(--awx-orange-500);
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      min-height: 8px;
+      transition: all 200ms;
+    }
+
+    .chart-bar:hover {
+      background: var(--awx-orange-400);
+    }
+
+    .chart-bar .tooltip {
+      display: none;
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--awx-gray-700);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      white-space: nowrap;
+      margin-bottom: 8px;
+    }
+
+    .chart-bar:hover .tooltip {
+      display: block;
+    }
+
+    .chart-labels {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .chart-label {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: var(--awx-gray-500);
+    }
+
+    /* Pitch Section */
+    .pitch-card {
+      background: linear-gradient(135deg, rgba(255, 107, 64, 0.1) 0%, rgba(255, 107, 64, 0.05) 100%);
+      border: 1px solid rgba(255, 107, 64, 0.2);
+    }
+
+    .pitch-card .card-title {
+      color: var(--awx-orange-400);
+    }
+
+    .pitch-points {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pitch-point {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .pitch-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--awx-orange-500);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .pitch-text {
+      font-size: 14px;
+      color: var(--awx-gray-300);
+      line-height: 1.5;
+    }
+
+    .pitch-text strong {
+      color: var(--awx-gray-100);
+      font-weight: 600;
+    }
+
+    /* Currency Flows */
+    .currency-flows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .currency-flow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--awx-gray-800);
+      border-radius: 10px;
+    }
+
+    .flow-pair {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .flow-ccy {
+      padding: 4px 8px;
+      background: var(--awx-gray-700);
+      border-radius: 5px;
+      color: var(--awx-gray-200);
+    }
+
+    .flow-arrow {
+      color: var(--awx-orange-400);
+    }
+
+    .flow-volume {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--awx-gray-300);
+    }
+
+    /* Web Enrichment */
+    .enrichment-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--awx-gray-800);
+    }
+
+    .enrichment-item:last-child {
+      border-bottom: none;
+    }
+
+    .enrichment-label {
+      font-size: 14px;
+      color: var(--awx-gray-500);
+    }
+
+    .enrichment-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--awx-gray-200);
+    }
+
+    .enrichment-value a {
+      color: var(--awx-orange-400);
+      text-decoration: none;
+    }
+
+    .enrichment-value a:hover {
+      text-decoration: underline;
+    }
+
+    /* Actions Panel */
+    .actions-panel {
+      background: var(--awx-gray-900);
+      border: 1px solid var(--awx-gray-800);
+      border-radius: 16px;
+      padding: 24px;
+      position: sticky;
+      top: 28px;
+    }
+
+    .action-btn-large {
+      width: 100%;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 150ms;
+      border: none;
+      font-family: inherit;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .action-btn-large.primary {
+      background: var(--awx-orange-500);
+      color: white;
+    }
+
+    .action-btn-large.primary:hover {
+      background: var(--awx-orange-600);
+      box-shadow: 0 10px 40px -10px rgba(255, 107, 64, 0.4);
+    }
+
+    .action-btn-large.secondary {
+      background: var(--awx-gray-800);
+      color: var(--awx-gray-300);
+      border: 1px solid var(--awx-gray-700);
+    }
+
+    .action-btn-large.secondary:hover {
+      background: var(--awx-gray-700);
+    }
+
+    .action-divider {
+      height: 1px;
+      background: var(--awx-gray-800);
+      margin: 20px 0;
+    }
+
+    .quick-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .quick-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .quick-stat-label {
+      font-size: 14px;
+      color: var(--awx-gray-500);
+    }
+
+    .quick-stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--awx-gray-100);
+    }
+
+    .quick-stat-value.green {
+      color: var(--awx-success-500);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-mark">CP</div>
+        <span class="logo-text">Lead Explorer</span>
+      </div>
+      <nav class="nav-section">
+        <div class="nav-label">Discovery</div>
+        <div class="nav-item active">◉ Top Leads</div>
+        <div class="nav-item">⌕ Search</div>
+        <div class="nav-item">⊞ By Client</div>
+      </nav>
+      <nav class="nav-section">
+        <div class="nav-label">Data</div>
+        <div class="nav-item">↑ Upload</div>
+        <div class="nav-item">⚙ Settings</div>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <a href="#" class="back-link">← Back to Top Leads</a>
+
+      <div class="header">
+        <div class="header-left">
+          <div class="score-large">
+            <span class="number">94</span>
+            <span class="label">Score</span>
+          </div>
+          <div class="header-info">
+            <h1>Acme Global Trading Ltd</h1>
+            <div class="header-meta">
+              <div class="region-badge">🇭🇰 Hong Kong</div>
+              <div class="type-badges">
+                <span class="type-badge receives">Receives from 3 clients</span>
+                <span class="type-badge pays">Pays 2 clients</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-secondary">🔗 Copy Link</button>
+          <button class="btn btn-primary">📧 Draft Outreach</button>
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <div class="left-column">
+          <!-- Key Metrics -->
+          <div class="metrics-grid">
+            <div class="metric">
+              <div class="metric-label">Total Volume</div>
+              <div class="metric-value">$2.3M</div>
+              <div class="metric-sub">Monthly average</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Transactions</div>
+              <div class="metric-value">47</div>
+              <div class="metric-sub">Per month</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Client Network</div>
+              <div class="metric-value orange">5</div>
+              <div class="metric-sub">Airwallex clients</div>
+            </div>
+            <div class="metric">
+              <div class="metric-label">Trend</div>
+              <div class="metric-value green">+23%</div>
+              <div class="metric-sub">vs. last quarter</div>
+            </div>
+          </div>
+
+          <!-- Pitch Points -->
+          <div class="card pitch-card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">💡 Pitch Points</div>
+                <div class="card-subtitle">Key talking points for outreach</div>
+              </div>
+            </div>
+            <div class="pitch-points">
+              <div class="pitch-point">
+                <div class="pitch-icon">🔗</div>
+                <div class="pitch-text">
+                  <strong>Strong network connection:</strong> Already transacting with 5 of our clients. With Airwallex Pay, settlements would be T+1 instead of T+3.
+                </div>
+              </div>
+              <div class="pitch-point">
+                <div class="pitch-icon">💱</div>
+                <div class="pitch-text">
+                  <strong>Multi-currency opportunity:</strong> Active in USD, HKD, CNY corridors. Could benefit from our competitive FX rates and local collection accounts.
+                </div>
+              </div>
+              <div class="pitch-point">
+                <div class="pitch-icon">📈</div>
+                <div class="pitch-text">
+                  <strong>Growing rapidly:</strong> Volume up 23% quarter-over-quarter. A growing business that would value scalable payment infrastructure.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Connections -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Client Connections</div>
+                <div class="card-subtitle">Your clients who transact with this company</div>
+              </div>
+            </div>
+            <div class="connection-list">
+              <div class="connection">
+                <div class="connection-info">
+                  <div class="connection-avatar">JD</div>
+                  <div>
+                    <div class="connection-name">Japan Digital Co. Limited</div>
+                    <div class="connection-bd">BD: David Tou</div>
+                  </div>
+                </div>
+                <div class="connection-stats">
+                  <div class="connection-volume">$890K/mo</div>
+                  <div class="connection-freq">18 txn/mo</div>
+                </div>
+                <span class="connection-type recv">Recv</span>
+              </div>
+              <div class="connection">
+                <div class="connection-info">
+                  <div class="connection-avatar">HK</div>
+                  <div>
+                    <div class="connection-name">HK Wholesale Partners</div>
+                    <div class="connection-bd">BD: Vicky Chan</div>
+                  </div>
+                </div>
+                <div class="connection-stats">
+                  <div class="connection-volume">$620K/mo</div>
+                  <div class="connection-freq">12 txn/mo</div>
+                </div>
+                <span class="connection-type recv">Recv</span>
+              </div>
+              <div class="connection">
+                <div class="connection-info">
+                  <div class="connection-avatar">SZ</div>
+                  <div>
+                    <div class="connection-name">Shenzhen Tech Supplies</div>
+                    <div class="connection-bd">BD: Michael Wong</div>
+                  </div>
+                </div>
+                <div class="connection-stats">
+                  <div class="connection-volume">$450K/mo</div>
+                  <div class="connection-freq">9 txn/mo</div>
+                </div>
+                <span class="connection-type recv">Recv</span>
+              </div>
+              <div class="connection">
+                <div class="connection-info">
+                  <div class="connection-avatar">GT</div>
+                  <div>
+                    <div class="connection-name">Global Trade Solutions</div>
+                    <div class="connection-bd">BD: Sarah Lee</div>
+                  </div>
+                </div>
+                <div class="connection-stats">
+                  <div class="connection-volume">$280K/mo</div>
+                  <div class="connection-freq">6 txn/mo</div>
+                </div>
+                <span class="connection-type pay">Pay</span>
+              </div>
+              <div class="connection">
+                <div class="connection-info">
+                  <div class="connection-avatar">AP</div>
+                  <div>
+                    <div class="connection-name">Asia Pacific Imports</div>
+                    <div class="connection-bd">BD: David Tou</div>
+                  </div>
+                </div>
+                <div class="connection-stats">
+                  <div class="connection-volume">$160K/mo</div>
+                  <div class="connection-freq">4 txn/mo</div>
+                </div>
+                <span class="connection-type pay">Pay</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction History -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Transaction History</div>
+                <div class="card-subtitle">Monthly volume over the past 12 months</div>
+              </div>
+            </div>
+            <div class="history-chart">
+              <div class="chart-bar" style="height: 45%"><span class="tooltip">Apr 2025: $1.1M</span></div>
+              <div class="chart-bar" style="height: 52%"><span class="tooltip">May 2025: $1.3M</span></div>
+              <div class="chart-bar" style="height: 48%"><span class="tooltip">Jun 2025: $1.2M</span></div>
+              <div class="chart-bar" style="height: 60%"><span class="tooltip">Jul 2025: $1.5M</span></div>
+              <div class="chart-bar" style="height: 55%"><span class="tooltip">Aug 2025: $1.4M</span></div>
+              <div class="chart-bar" style="height: 72%"><span class="tooltip">Sep 2025: $1.8M</span></div>
+              <div class="chart-bar" style="height: 68%"><span class="tooltip">Oct 2025: $1.7M</span></div>
+              <div class="chart-bar" style="height: 80%"><span class="tooltip">Nov 2025: $2.0M</span></div>
+              <div class="chart-bar" style="height: 76%"><span class="tooltip">Dec 2025: $1.9M</span></div>
+              <div class="chart-bar" style="height: 88%"><span class="tooltip">Jan 2026: $2.2M</span></div>
+              <div class="chart-bar" style="height: 84%"><span class="tooltip">Feb 2026: $2.1M</span></div>
+              <div class="chart-bar" style="height: 92%"><span class="tooltip">Mar 2026: $2.3M</span></div>
+            </div>
+            <div class="chart-labels">
+              <span class="chart-label">Apr</span>
+              <span class="chart-label">May</span>
+              <span class="chart-label">Jun</span>
+              <span class="chart-label">Jul</span>
+              <span class="chart-label">Aug</span>
+              <span class="chart-label">Sep</span>
+              <span class="chart-label">Oct</span>
+              <span class="chart-label">Nov</span>
+              <span class="chart-label">Dec</span>
+              <span class="chart-label">Jan</span>
+              <span class="chart-label">Feb</span>
+              <span class="chart-label">Mar</span>
+            </div>
+          </div>
+
+          <!-- Currency Flows -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Currency Corridors</div>
+                <div class="card-subtitle">FX opportunity based on payment flows</div>
+              </div>
+            </div>
+            <div class="currency-flows">
+              <div class="currency-flow">
+                <div class="flow-pair">
+                  <span class="flow-ccy">USD</span>
+                  <span class="flow-arrow">→</span>
+                  <span class="flow-ccy">HKD</span>
+                </div>
+                <span class="flow-volume">$1.2M/mo</span>
+              </div>
+              <div class="currency-flow">
+                <div class="flow-pair">
+                  <span class="flow-ccy">CNY</span>
+                  <span class="flow-arrow">→</span>
+                  <span class="flow-ccy">USD</span>
+                </div>
+                <span class="flow-volume">$680K/mo</span>
+              </div>
+              <div class="currency-flow">
+                <div class="flow-pair">
+                  <span class="flow-ccy">HKD</span>
+                  <span class="flow-arrow">→</span>
+                  <span class="flow-ccy">CNY</span>
+                </div>
+                <span class="flow-volume">$420K/mo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="right-column">
+          <div class="actions-panel">
+            <button class="action-btn-large primary">📧 Draft Outreach Email</button>
+            <button class="action-btn-large secondary">📋 Copy Pitch Points</button>
+            <button class="action-btn-large secondary">🔍 Search Web for Info</button>
+
+            <div class="action-divider"></div>
+
+            <div class="quick-stats">
+              <div class="quick-stat">
+                <span class="quick-stat-label">Lead Score</span>
+                <span class="quick-stat-value green">94 / 100</span>
+              </div>
+              <div class="quick-stat">
+                <span class="quick-stat-label">Network Rank</span>
+                <span class="quick-stat-value">#12 of 11,847</span>
+              </div>
+              <div class="quick-stat">
+                <span class="quick-stat-label">Data Freshness</span>
+                <span class="quick-stat-value">Mar 2026</span>
+              </div>
+            </div>
+
+            <div class="action-divider"></div>
+
+            <!-- Web Enrichment -->
+            <div class="card-title" style="margin-bottom: 16px;">Company Info</div>
+            <div class="enrichment-item">
+              <span class="enrichment-label">Website</span>
+              <span class="enrichment-value"><a href="#">acmeglobal.hk</a></span>
+            </div>
+            <div class="enrichment-item">
+              <span class="enrichment-label">Industry</span>
+              <span class="enrichment-value">Trading & Distribution</span>
+            </div>
+            <div class="enrichment-item">
+              <span class="enrichment-label">Est. Size</span>
+              <span class="enrichment-value">50–200 employees</span>
+            </div>
+            <div class="enrichment-item">
+              <span class="enrichment-label">LinkedIn</span>
+              <span class="enrichment-value"><a href="#">View Profile →</a></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

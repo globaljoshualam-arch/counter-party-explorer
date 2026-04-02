@@ -8,6 +8,8 @@ from .styles import GLOBAL_CSS, score_badge, type_badges, region_badge, get_flag
 
 def format_volume(amount: float) -> str:
     """Format volume as $1.2M, $500K, etc."""
+    if pd.isna(amount) or not amount:
+        return "$0"
     if amount >= 1_000_000:
         return f"${amount / 1_000_000:.1f}M"
     elif amount >= 1_000:
@@ -22,8 +24,6 @@ def render_dashboard(df: pd.DataFrame):
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
 
     # Initialize session state
-    if "current_view" not in st.session_state:
-        st.session_state.current_view = "dashboard"
     if "current_page" not in st.session_state:
         st.session_state.current_page = 1
 
@@ -32,27 +32,27 @@ def render_dashboard(df: pd.DataFrame):
     with col1:
         st.title("Top Leads")
     with col2:
-        if st.button("📤 Upload"):
-            st.session_state.current_view = "upload"
+        if st.button("📤 Upload Data", type="primary"):
+            st.session_state.view = "upload"
             st.rerun()
 
     # Metrics
     total_leads = len(df)
     high_potential = len(df[df["score"] >= 80])
-    network_volume = df["total_volume"].sum()
+    network_volume = df["total_volume_usd"].sum()
     multi_client = len(df[df["client_count"] > 1])
 
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.metric("Total Leads", f"{total_leads:,}")
     with col2:
-        st.metric("High Potential", f"{high_potential:,}")
+        st.metric("High Potential", f"{high_potential:,}", help="Score 80+")
     with col3:
         st.metric("Network Volume", format_volume(network_volume))
     with col4:
-        st.metric("Multi-Client", f"{multi_client:,}")
+        st.metric("Multi-Client", f"{multi_client:,}", help="2+ client connections")
 
-    st.markdown("---")
+    st.divider()
 
     # Filters
     col1, col2, col3, col4 = st.columns(4)
@@ -61,7 +61,9 @@ def render_dashboard(df: pd.DataFrame):
         search = st.text_input("🔍 Search", placeholder="Company name...")
 
     with col2:
-        regions = ["All"] + sorted(df["country"].unique().tolist())
+        # Handle null countries
+        countries = df["country"].dropna().unique().tolist()
+        regions = ["All"] + sorted([c for c in countries if c])
         region_filter = st.selectbox("🌍 Region", regions)
 
     with col3:
@@ -83,26 +85,13 @@ def render_dashboard(df: pd.DataFrame):
     if region_filter != "All":
         filtered_df = filtered_df[filtered_df["country"] == region_filter]
 
-    # Type filter
+    # Type filter (using boolean receives/pays columns)
     if type_filter == "Receives":
-        filtered_df = filtered_df[
-            (filtered_df["receives_currencies"].notna()) &
-            (filtered_df["receives_currencies"] != "") &
-            ((filtered_df["pays_currencies"].isna()) | (filtered_df["pays_currencies"] == ""))
-        ]
+        filtered_df = filtered_df[filtered_df["receives"] == True]
     elif type_filter == "Pays":
-        filtered_df = filtered_df[
-            (filtered_df["pays_currencies"].notna()) &
-            (filtered_df["pays_currencies"] != "") &
-            ((filtered_df["receives_currencies"].isna()) | (filtered_df["receives_currencies"] == ""))
-        ]
+        filtered_df = filtered_df[filtered_df["pays"] == True]
     elif type_filter == "Both":
-        filtered_df = filtered_df[
-            (filtered_df["receives_currencies"].notna()) &
-            (filtered_df["receives_currencies"] != "") &
-            (filtered_df["pays_currencies"].notna()) &
-            (filtered_df["pays_currencies"] != "")
-        ]
+        filtered_df = filtered_df[(filtered_df["receives"] == True) & (filtered_df["pays"] == True)]
 
     # Score filter
     if score_filter == "80+":
@@ -124,8 +113,7 @@ def render_dashboard(df: pd.DataFrame):
     end_idx = start_idx + items_per_page
     page_df = filtered_df.iloc[start_idx:end_idx]
 
-    st.markdown(f"**Showing {len(filtered_df):,} leads**")
-    st.markdown("---")
+    st.caption(f"Showing {len(filtered_df):,} leads")
 
     # Leads table
     if len(page_df) == 0:
@@ -133,49 +121,67 @@ def render_dashboard(df: pd.DataFrame):
     else:
         for idx, row in page_df.iterrows():
             with st.container():
-                col1, col2, col3, col4, col5, col6, col7, col8 = st.columns([1, 2, 1.5, 1.5, 1.5, 1, 1.5, 1])
+                cols = st.columns([0.8, 2.5, 1.5, 1.2, 1.2, 0.8, 1.2, 0.6])
 
-                with col1:
-                    st.markdown(score_badge(row["score"]), unsafe_allow_html=True)
+                # Score
+                with cols[0]:
+                    score = row["score"]
+                    if score >= 80:
+                        color = "#22C55E"
+                    elif score >= 60:
+                        color = "#F59E0B"
+                    else:
+                        color = "#404040"
+                    st.markdown(f'<div style="background:{color};color:white;padding:8px;border-radius:8px;text-align:center;font-family:monospace;font-weight:600;">{score}</div>', unsafe_allow_html=True)
 
-                with col2:
+                # Company
+                with cols[1]:
                     st.markdown(f"**{row['company_name']}**")
 
-                with col3:
-                    st.markdown(region_badge(row["country"]), unsafe_allow_html=True)
+                # Region
+                with cols[2]:
+                    country = row.get("country") or "Unknown"
+                    flag = get_flag(country)
+                    st.markdown(f'<span style="background:rgba(255,107,64,0.1);color:#FF8A66;padding:4px 10px;border-radius:6px;">{flag} {country}</span>', unsafe_allow_html=True)
 
-                with col4:
-                    receives = row.get("receives_currencies", "") or ""
-                    pays = row.get("pays_currencies", "") or ""
-                    if receives or pays:
-                        st.markdown(type_badges(receives, pays), unsafe_allow_html=True)
+                # Type
+                with cols[3]:
+                    receives = row.get("receives", False)
+                    pays = row.get("pays", False)
+                    types = []
+                    if receives:
+                        types.append('<span style="color:#4ADE80;">Recv</span>')
+                    if pays:
+                        types.append('<span style="color:#60A5FA;">Pay</span>')
+                    st.markdown(" / ".join(types) if types else "—", unsafe_allow_html=True)
+
+                # Volume
+                with cols[4]:
+                    st.markdown(f'<span style="font-family:monospace;">{format_volume(row["total_volume_usd"])}</span>', unsafe_allow_html=True)
+
+                # Clients
+                with cols[5]:
+                    st.markdown(f'<span style="font-family:monospace;">{row["client_count"]}</span>', unsafe_allow_html=True)
+
+                # Currencies
+                with cols[6]:
+                    currencies = row.get("currencies", [])
+                    if isinstance(currencies, list) and currencies:
+                        display = ", ".join(currencies[:3])
+                        if len(currencies) > 3:
+                            display += f" +{len(currencies) - 3}"
+                        st.markdown(f'<span style="font-family:monospace;font-size:12px;">{display}</span>', unsafe_allow_html=True)
                     else:
                         st.markdown("—")
 
-                with col5:
-                    st.markdown(f'<span class="mono">{format_volume(row["total_volume"])}</span>', unsafe_allow_html=True)
-
-                with col6:
-                    st.markdown(f'<span class="mono">{row["client_count"]}</span>', unsafe_allow_html=True)
-
-                with col7:
-                    currencies = row.get("all_currencies", "") or ""
-                    if currencies:
-                        currency_list = [c.strip() for c in currencies.split(",")]
-                        display = ", ".join(currency_list[:3])
-                        if len(currency_list) > 3:
-                            display += f" +{len(currency_list) - 3}"
-                        st.markdown(f'<span class="mono">{display}</span>', unsafe_allow_html=True)
-                    else:
-                        st.markdown("—")
-
-                with col8:
+                # View button
+                with cols[7]:
                     if st.button("👁️", key=f"view_{idx}"):
-                        st.session_state.current_view = "detail"
-                        st.session_state.selected_company = row["company_name"]
+                        st.session_state.view = "detail"
+                        st.session_state.selected_lead = row.to_dict()
                         st.rerun()
 
-                st.markdown("---")
+            st.divider()
 
     # Pagination controls
     if total_pages > 1:

@@ -1,0 +1,13 @@
+[00:46:52.510] [INFO] Initializing Storybook
+[00:46:52.689] [DEBUG] Getting package.json info for /Users/joshua.lam/Claude/Projects/Counter-Party Trade/package.json...
+[00:46:52.689] [DEBUG] Getting CLI versions from NPM for storybook...
+[00:46:52.689] [DEBUG] Executing command: npm info storybook version
+[00:46:53.401] [INFO] Adding Storybook version 10.3.3 to your project
+[00:46:53.402] [ERROR] Unable to initialize Storybook in this directory.
+
+Storybook couldn't detect a supported framework or configuration for your project. Make sure you're inside a framework project (e.g., React, Vue, Svelte, Angular, Next.js) and that its dependencies are installed.
+
+Tips:
+- Run init in an empty directory or create a new framework app first.
+- If this directory contains unrelated files, try a new directory for Storybook.
+[00:46:53.405] [INFO] Storybook collects completely anonymous usage telemetry. We use it to shape Storybook's roadmap and prioritize features. You can learn more, including how to opt out, at https://storybook.js.org/telemetry

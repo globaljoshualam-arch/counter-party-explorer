@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter-Party Lead Explorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --awx-orange-50: #FFF7F5;
+      --awx-orange-100: #FFEBE5;
+      --awx-orange-200: #FFD4C7;
+      --awx-orange-400: #FF8A66;
+      --awx-orange-500: #FF6B40;
+      --awx-orange-600: #F54D1F;
+      --awx-payments-500: #2B7FFF;
+      --awx-success-500: #22C55E;
+      --awx-warning-500: #F59E0B;
+      --awx-error-500: #EF4444;
+      --awx-gray-50: #FAFAFA;
+      --awx-gray-100: #F5F5F5;
+      --awx-gray-200: #E5E5E5;
+      --awx-gray-300: #D4D4D4;
+      --awx-gray-400: #A3A3A3;
+      --awx-gray-500: #737373;
+      --awx-gray-600: #525252;
+      --awx-gray-700: #404040;
+      --awx-gray-800: #262626;
+      --awx-gray-900: #171717;
+      --awx-gray-950: #0A0A0A;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--awx-gray-950);
+      color: var(--awx-gray-100);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--awx-gray-900);
+      border-right: 1px solid var(--awx-gray-800);
+      padding: 24px 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+      margin-bottom: 36px;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--awx-orange-500), var(--awx-orange-400));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 15px;
+      color: white;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--awx-gray-100);
+    }
+
+    .nav-section { margin-bottom: 28px; }
+
+    .nav-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--awx-gray-500);
+      padding: 0 12px;
+      margin-bottom: 10px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--awx-gray-400);
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .nav-item:hover {
+      background: var(--awx-gray-800);
+      color: var(--awx-gray-100);
+    }
+
+    .nav-item.active {
+      background: var(--awx-orange-500);
+      color: white;
+    }
+
+    /* Main */
+    .main {
+      padding: 28px 36px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--awx-gray-50);
+      letter-spacing: -0.02em;
+    }
+
+    .header-actions { display: flex; gap: 12px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 150ms;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-secondary {
+      background: var(--awx-gray-800);
+      color: var(--awx-gray-300);
+      border: 1px solid var(--awx-gray-700);
+    }
+
+    .btn-secondary:hover {
+      background: var(--awx-gray-700);
+    }
+
+    .btn-primary {
+      background: var(--awx-orange-500);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--awx-orange-600);
+      box-shadow: 0 10px 40px -10px rgba(255, 107, 64, 0.4);
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--awx-gray-900);
+      border: 1px solid var(--awx-gray-800);
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--awx-gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--awx-gray-50);
+      margin-top: 8px;
+    }
+
+    .stat-value.orange { color: var(--awx-orange-400); }
+
+    .stat-sub {
+      font-size: 13px;
+      color: var(--awx-gray-500);
+      margin-top: 4px;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 14px 16px 14px 46px;
+      background: var(--awx-gray-900);
+      border: 1px solid var(--awx-gray-700);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--awx-gray-100);
+      transition: all 150ms;
+    }
+
+    .search-box input::placeholder { color: var(--awx-gray-500); }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--awx-orange-500);
+      box-shadow: 0 0 0 3px rgba(255, 107, 64, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--awx-gray-500);
+      font-size: 16px;
+    }
+
+    .filter-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 18px;
+      background: var(--awx-gray-900);
+      border: 1px solid var(--awx-gray-700);
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--awx-gray-400);
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--awx-gray-600);
+      color: var(--awx-gray-300);
+    }
+
+    .filter-btn.active {
+      background: var(--awx-orange-500);
+      border-color: var(--awx-orange-500);
+      color: white;
+    }
+
+    /* Region filter with flag-like styling */
+    .filter-btn.region {
+      background: var(--awx-gray-800);
+      border-color: var(--awx-orange-500);
+      color: var(--awx-orange-400);
+    }
+
+    /* Table */
+    .table-container {
+      background: var(--awx-gray-900);
+      border: 1px solid var(--awx-gray-800);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead { background: var(--awx-gray-800); }
+
+    th {
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--awx-gray-400);
+      border-bottom: 1px solid var(--awx-gray-700);
+      white-space: nowrap;
+    }
+
+    th.sortable { cursor: pointer; }
+    th.sortable:hover { color: var(--awx-gray-200); }
+    th.sorted { color: var(--awx-orange-400); }
+
+    td {
+      padding: 14px 16px;
+      font-size: 15px;
+      border-bottom: 1px solid var(--awx-gray-800);
+      vertical-align: middle;
+    }
+
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    tr:last-child td { border-bottom: none; }
+
+    /* Score */
+    .score {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      min-width: 42px;
+      text-align: center;
+    }
+
+    .score.high { background: var(--awx-success-500); color: white; }
+    .score.medium { background: var(--awx-warning-500); color: var(--awx-gray-900); }
+    .score.low { background: var(--awx-gray-700); color: var(--awx-gray-300); }
+
+    /* Company + Region */
+    .company-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .company {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--awx-gray-50);
+    }
+
+    /* Region - MORE PROMINENT */
+    .region {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--awx-orange-400);
+      background: rgba(255, 107, 64, 0.1);
+      padding: 3px 10px;
+      border-radius: 6px;
+      width: fit-content;
+    }
+
+    .region-flag {
+      font-size: 14px;
+    }
+
+    /* Type Tags */
+    .tags { display: flex; gap: 6px; }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+
+    .tag.receives {
+      background: rgba(34, 197, 94, 0.15);
+      color: #4ADE80;
+    }
+
+    .tag.pays {
+      background: rgba(43, 127, 255, 0.15);
+      color: #60A5FA;
+    }
+
+    /* Volume */
+    .volume {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--awx-gray-100);
+    }
+
+    .volume-sub {
+      font-size: 12px;
+      color: var(--awx-gray-500);
+      margin-top: 2px;
+    }
+
+    /* Network */
+    .network {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .network-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--awx-gray-200);
+      min-width: 24px;
+    }
+
+    .network-bar {
+      width: 50px;
+      height: 6px;
+      background: var(--awx-gray-700);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .network-fill {
+      height: 100%;
+      background: var(--awx-orange-500);
+      border-radius: 3px;
+    }
+
+    /* Currencies */
+    .currencies { display: flex; gap: 4px; flex-wrap: wrap; }
+
+    .ccy {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 8px;
+      background: var(--awx-gray-800);
+      color: var(--awx-gray-300);
+      border-radius: 5px;
+    }
+
+    /* Trend */
+    .trend {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .trend.up { color: var(--awx-success-500); }
+    .trend.down { color: var(--awx-error-500); }
+    .trend.stable { color: var(--awx-gray-500); }
+
+    /* View Button */
+    .view-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--awx-orange-500);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .view-btn:hover {
+      background: var(--awx-orange-600);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 107, 64, 0.3);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-top: 1px solid var(--awx-gray-800);
+    }
+
+    .pagination-info {
+      font-size: 14px;
+      color: var(--awx-gray-500);
+    }
+
+    .pagination-controls { display: flex; gap: 6px; }
+
+    .page-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--awx-gray-700);
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--awx-gray-400);
+      cursor: pointer;
+      transition: all 150ms;
+    }
+
+    .page-btn:hover {
+      border-color: var(--awx-gray-600);
+      color: var(--awx-gray-300);
+    }
+
+    .page-btn.active {
+      background: var(--awx-orange-500);
+      border-color: var(--awx-orange-500);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-mark">CP</div>
+        <span class="logo-text">Lead Explorer</span>
+      </div>
+      <nav class="nav-section">
+        <div class="nav-label">Discovery</div>
+        <div class="nav-item active">◉ Top Leads</div>
+        <div class="nav-item">⌕ Search</div>
+        <div class="nav-item">⊞ By Client</div>
+      </nav>
+      <nav class="nav-section">
+        <div class="nav-label">Data</div>
+        <div class="nav-item">↑ Upload</div>
+        <div class="nav-item">⚙ Settings</div>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="header">
+        <h1>Top Leads</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary">Export CSV</button>
+          <button class="btn btn-primary">↑ Upload Data</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Total Leads</div>
+          <div class="stat-value">11,847</div>
+          <div class="stat-sub">Unique counterparties</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">High Potential</div>
+          <div class="stat-value orange">842</div>
+          <div class="stat-sub">Score 80+</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Network Volume</div>
+          <div class="stat-value">$2.4B</div>
+          <div class="stat-sub">Monthly transactions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Multi-Client</div>
+          <div class="stat-value">1,203</div>
+          <div class="stat-sub">2+ client connections</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search-box">
+          <span class="search-icon">⌕</span>
+          <input type="text" placeholder="Search company name...">
+        </div>
+        <button class="filter-btn region">🌏 Region ▾</button>
+        <button class="filter-btn active">All Types</button>
+        <button class="filter-btn">Receives</button>
+        <button class="filter-btn">Pays</button>
+        <button class="filter-btn">Currency ▾</button>
+        <button class="filter-btn">Score ▾</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th class="sortable sorted" style="width:70px">Score ↓</th>
+              <th class="sortable">Company</th>
+              <th class="sortable" style="width:140px">Region</th>
+              <th style="width:110px">Type</th>
+              <th class="sortable" style="width:130px">Volume</th>
+              <th class="sortable" style="width:110px">Clients</th>
+              <th style="width:130px">Currencies</th>
+              <th class="sortable" style="width:80px">Trend</th>
+              <th style="width:80px"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="score high">94</span></td>
+              <td><div class="company">Acme Global Trading Ltd</div></td>
+              <td><div class="region"><span class="region-flag">🇭🇰</span> Hong Kong</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$2.3M</div><div class="volume-sub">47 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">5</span><div class="network-bar"><div class="network-fill" style="width:100%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">USD</span><span class="ccy">HKD</span><span class="ccy">CNY</span></div></td>
+              <td><span class="trend up">+23%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">91</span></td>
+              <td><div class="company">Pacific Components Inc</div></td>
+              <td><div class="region"><span class="region-flag">🇯🇵</span> Japan</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span></div></td>
+              <td><div class="volume">$1.8M</div><div class="volume-sub">32 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">4</span><div class="network-bar"><div class="network-fill" style="width:80%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">JPY</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+15%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">89</span></td>
+              <td><div class="company">Shenzhen Electronics Co</div></td>
+              <td><div class="region"><span class="region-flag">🇨🇳</span> China</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$1.6M</div><div class="volume-sub">28 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">4</span><div class="network-bar"><div class="network-fill" style="width:80%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">CNY</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+31%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">87</span></td>
+              <td><div class="company">European Textiles GmbH</div></td>
+              <td><div class="region"><span class="region-flag">🇩🇪</span> Germany</div></td>
+              <td><div class="tags"><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$1.4M</div><div class="volume-sub">18 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">3</span><div class="network-bar"><div class="network-fill" style="width:60%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">EUR</span><span class="ccy">GBP</span></div></td>
+              <td><span class="trend stable">−2%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">85</span></td>
+              <td><div class="company">Seoul Tech Manufacturing</div></td>
+              <td><div class="region"><span class="region-flag">🇰🇷</span> South Korea</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span></div></td>
+              <td><div class="volume">$1.2M</div><div class="volume-sub">24 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">3</span><div class="network-bar"><div class="network-fill" style="width:60%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">KRW</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+18%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">83</span></td>
+              <td><div class="company">Melbourne Import Export</div></td>
+              <td><div class="region"><span class="region-flag">🇦🇺</span> Australia</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$1.1M</div><div class="volume-sub">21 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">3</span><div class="network-bar"><div class="network-fill" style="width:60%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">AUD</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+9%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">81</span></td>
+              <td><div class="company">Nordic Freight Solutions</div></td>
+              <td><div class="region"><span class="region-flag">🇸🇪</span> Sweden</div></td>
+              <td><div class="tags"><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$980K</div><div class="volume-sub">15 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">2</span><div class="network-bar"><div class="network-fill" style="width:40%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">SEK</span><span class="ccy">EUR</span></div></td>
+              <td><span class="trend up">+12%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score high">80</span></td>
+              <td><div class="company">Singapore Fresh Produce</div></td>
+              <td><div class="region"><span class="region-flag">🇸🇬</span> Singapore</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span></div></td>
+              <td><div class="volume">$890K</div><div class="volume-sub">24 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">2</span><div class="network-bar"><div class="network-fill" style="width:40%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">SGD</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+8%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score medium">78</span></td>
+              <td><div class="company">Thames Valley Logistics</div></td>
+              <td><div class="region"><span class="region-flag">🇬🇧</span> United Kingdom</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$820K</div><div class="volume-sub">19 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">2</span><div class="network-bar"><div class="network-fill" style="width:40%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">GBP</span><span class="ccy">EUR</span></div></td>
+              <td><span class="trend stable">+1%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score medium">76</span></td>
+              <td><div class="company">Delta Logistics Co</div></td>
+              <td><div class="region"><span class="region-flag">🇦🇺</span> Australia</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$650K</div><div class="volume-sub">12 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">2</span><div class="network-bar"><div class="network-fill" style="width:40%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">AUD</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend down">−5%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score medium">74</span></td>
+              <td><div class="company">Vancouver Trading Group</div></td>
+              <td><div class="region"><span class="region-flag">🇨🇦</span> Canada</div></td>
+              <td><div class="tags"><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$580K</div><div class="volume-sub">14 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">2</span><div class="network-bar"><div class="network-fill" style="width:40%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">CAD</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+6%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score medium">72</span></td>
+              <td><div class="company">Jakarta Supply Chain</div></td>
+              <td><div class="region"><span class="region-flag">🇮🇩</span> Indonesia</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span></div></td>
+              <td><div class="volume">$520K</div><div class="volume-sub">22 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">2</span><div class="network-bar"><div class="network-fill" style="width:40%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">IDR</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+14%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score medium">70</span></td>
+              <td><div class="company">Paris Fashion Imports</div></td>
+              <td><div class="region"><span class="region-flag">🇫🇷</span> France</div></td>
+              <td><div class="tags"><span class="tag pays">Pay</span></div></td>
+              <td><div class="volume">$480K</div><div class="volume-sub">8 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">1</span><div class="network-bar"><div class="network-fill" style="width:20%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">EUR</span></div></td>
+              <td><span class="trend stable">+2%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+            <tr>
+              <td><span class="score medium">68</span></td>
+              <td><div class="company">Mumbai Tech Services</div></td>
+              <td><div class="region"><span class="region-flag">🇮🇳</span> India</div></td>
+              <td><div class="tags"><span class="tag receives">Recv</span></div></td>
+              <td><div class="volume">$420K</div><div class="volume-sub">16 txn/mo</div></td>
+              <td><div class="network"><span class="network-count">1</span><div class="network-bar"><div class="network-fill" style="width:20%"></div></div></div></td>
+              <td><div class="currencies"><span class="ccy">INR</span><span class="ccy">USD</span></div></td>
+              <td><span class="trend up">+21%</span></td>
+              <td><button class="view-btn">View</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <div class="pagination-info">Showing 1–14 of 842 high-potential leads</div>
+          <div class="pagination-controls">
+            <button class="page-btn">←</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">4</button>
+            <button class="page-btn">5</button>
+            <button class="page-btn">...</button>
+            <button class="page-btn">61</button>
+            <button class="page-btn">→</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
