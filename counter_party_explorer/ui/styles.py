@@ -33,8 +33,8 @@ def get_flag(country) -> str:
     return FLAGS.get(country, FLAGS.get(country.upper(), "🌍"))
 
 
-# Airwallex logo (white version for dark backgrounds)
-AIRWALLEX_LOGO_WHITE = "https://www.airwallex.com/hubfs/Airwallex%20Logo%20-%20White.svg"
+# Airwallex logo (black version, inverted to white via CSS for dark backgrounds)
+AIRWALLEX_LOGO_URL = "https://images.ctfassets.net/sxag7u4cz1re/4JT4j5mM4qMIBdchA0NtuV/6182b7df2437b3b75b7b6a6d9de18d73/Airwallex_Logo_-_Black.png"
 
 # Complete Airwallex dark theme CSS
 GLOBAL_CSS = """
@@ -54,6 +54,7 @@ GLOBAL_CSS = """
     width: auto;
     opacity: 0.9;
     transition: opacity 200ms ease-out;
+    filter: invert(1) brightness(2);  /* Invert black logo to white */
 }
 
 .awx-logo-container img:hover {
@@ -478,7 +479,7 @@ section[data-testid="stFileUploader"] > div {
 def render_logo() -> str:
     """Return HTML for Airwallex logo in top right corner."""
     return f'''<div class="awx-logo-container">
-        <img src="{AIRWALLEX_LOGO_WHITE}" alt="Airwallex" />
+        <img src="{AIRWALLEX_LOGO_URL}" alt="Airwallex" />
     </div>'''
 
 
