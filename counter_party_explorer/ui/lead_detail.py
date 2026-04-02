@@ -3,7 +3,7 @@
 import streamlit as st
 import pandas as pd
 
-from counter_party_explorer.ui.styles import GLOBAL_CSS, get_flag
+from counter_party_explorer.ui.styles import GLOBAL_CSS, get_flag, render_logo
 
 
 def format_volume(amount):
@@ -23,6 +23,7 @@ def format_volume(amount):
 def render_lead_detail(lead: dict, all_data: pd.DataFrame = None):
     """Render detailed view for a single lead."""
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
+    st.markdown(render_logo(), unsafe_allow_html=True)
 
     # Back button
     if st.button("← Back to Top Leads"):

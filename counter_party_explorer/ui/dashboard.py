@@ -3,7 +3,7 @@
 import streamlit as st
 import pandas as pd
 
-from counter_party_explorer.ui.styles import GLOBAL_CSS, get_flag
+from counter_party_explorer.ui.styles import GLOBAL_CSS, get_flag, render_logo
 
 
 def format_volume(amount: float) -> str:
@@ -23,6 +23,7 @@ def format_volume(amount: float) -> str:
 def render_dashboard(df: pd.DataFrame):
     """Main dashboard with stats, filters, and lead table."""
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
+    st.markdown(render_logo(), unsafe_allow_html=True)
 
     # Initialize session state
     if "current_page" not in st.session_state:
