@@ -4,6 +4,7 @@ import streamlit as st
 import pandas as pd
 import json
 import pathlib
+import sys
 
 # Page config must be first
 st.set_page_config(
@@ -12,7 +13,12 @@ st.set_page_config(
     layout="wide"
 )
 
-# Import UI components
+# Fix Python path for Streamlit Cloud - add repo root to allow package imports
+repo_root = pathlib.Path(__file__).parent.parent.resolve()
+if str(repo_root) not in sys.path:
+    sys.path.insert(0, str(repo_root))
+
+# Now imports will work
 from counter_party_explorer.ui.styles import GLOBAL_CSS
 from counter_party_explorer.ui.dashboard import render_dashboard
 from counter_party_explorer.ui.lead_detail import render_lead_detail
@@ -20,24 +26,17 @@ from counter_party_explorer.ui.lead_detail import render_lead_detail
 
 def get_data_dir():
     """Find the data directory robustly - works on both local and Streamlit Cloud."""
-    current_file = pathlib.Path(__file__).resolve()
-
-    # Option 1: data/ in repo root (sibling to counter_party_explorer/)
-    repo_data = current_file.parent.parent / "data"
+    # data/ in repo root (sibling to counter_party_explorer/)
+    repo_data = repo_root / "data"
     if repo_data.exists():
         return repo_data
 
-    # Option 2: Check if we're on Streamlit Cloud
+    # Fallback: Check Streamlit Cloud path
     cloud_path = pathlib.Path("/mount/src/counter-party-explorer/data")
     if cloud_path.exists():
         return cloud_path
 
-    # Option 3: Current working directory
-    cwd_data = pathlib.Path.cwd() / "data"
-    if cwd_data.exists():
-        return cwd_data
-
-    return repo_data  # Return default even if not found
+    return repo_data
 
 
 DATA_DIR = get_data_dir()
@@ -98,7 +97,7 @@ with st.spinner("Loading leads data..."):
 
 if len(df) == 0:
     st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
-    st.error(f"No data found. Please ensure data/leads_processed.csv exists.")
+    st.error("No data found. Please ensure data/leads_processed.csv exists.")
     st.stop()
 
 # Route to appropriate view
