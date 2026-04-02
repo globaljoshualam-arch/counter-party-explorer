@@ -3,7 +3,7 @@
 import streamlit as st
 import pandas as pd
 import json
-import os
+import pathlib
 
 # Page config must be first
 st.set_page_config(
@@ -12,12 +12,14 @@ st.set_page_config(
     layout="wide"
 )
 
-# Find data directory - works on both local and Streamlit Cloud
-# On Cloud, the repo is mounted at /mount/src/counter-party-explorer/
+# Import UI components
+from counter_party_explorer.ui.styles import GLOBAL_CSS
+from counter_party_explorer.ui.dashboard import render_dashboard
+from counter_party_explorer.ui.lead_detail import render_lead_detail
+
+
 def get_data_dir():
-    """Find the data directory robustly."""
-    # Try relative to this file first
-    import pathlib
+    """Find the data directory robustly - works on both local and Streamlit Cloud."""
     current_file = pathlib.Path(__file__).resolve()
 
     # Option 1: data/ in repo root (sibling to counter_party_explorer/)
@@ -37,7 +39,9 @@ def get_data_dir():
 
     return repo_data  # Return default even if not found
 
+
 DATA_DIR = get_data_dir()
+
 
 @st.cache_data
 def load_data():
@@ -50,8 +54,9 @@ def load_data():
         return df
     return pd.DataFrame()
 
-# Simple password check
+
 def check_password():
+    """Simple password protection."""
     if "authenticated" in st.session_state and st.session_state.authenticated:
         return True
 
@@ -61,8 +66,14 @@ def check_password():
         # No password configured, allow access
         return True
 
-    password = st.text_input("Password", type="password")
-    if st.button("Login"):
+    # Apply styling to login page too
+    st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
+
+    st.markdown("# Counter-Party Lead Explorer")
+    st.markdown("Please enter the password to continue.")
+
+    password = st.text_input("Password", type="password", label_visibility="collapsed")
+    if st.button("Login", type="primary"):
         if password == correct_password:
             st.session_state.authenticated = True
             st.rerun()
@@ -70,43 +81,28 @@ def check_password():
             st.error("Incorrect password")
     return False
 
+
 # Main app
 if not check_password():
     st.stop()
 
-st.title("Counter-Party Lead Explorer")
-
-# Debug info (can remove later)
-st.caption(f"Data dir: {DATA_DIR}")
+# Initialize session state
+if "view" not in st.session_state:
+    st.session_state.view = "dashboard"
+if "selected_lead" not in st.session_state:
+    st.session_state.selected_lead = None
 
 # Load data
-with st.spinner("Loading data..."):
+with st.spinner("Loading leads data..."):
     df = load_data()
 
 if len(df) == 0:
-    st.error(f"No data found. Looked in: {DATA_DIR / 'leads_processed.csv'}")
+    st.markdown(GLOBAL_CSS, unsafe_allow_html=True)
+    st.error(f"No data found. Please ensure data/leads_processed.csv exists.")
     st.stop()
 
-st.success(f"Loaded {len(df):,} leads")
-
-# Filters
-col1, col2 = st.columns(2)
-with col1:
-    search = st.text_input("Search company")
-with col2:
-    min_score = st.slider("Min Score", 0, 100, 0)
-
-# Filter data
-filtered = df.copy()
-if search:
-    filtered = filtered[filtered['company_name'].str.contains(search, case=False, na=False)]
-if min_score > 0:
-    filtered = filtered[filtered['score'] >= min_score]
-
-st.write(f"Showing {len(filtered):,} leads")
-
-# Display table
-st.dataframe(
-    filtered[['company_name', 'country', 'score', 'total_volume_usd', 'client_count']].head(50),
-    use_container_width=True
-)
+# Route to appropriate view
+if st.session_state.view == "detail" and st.session_state.selected_lead:
+    render_lead_detail(st.session_state.selected_lead, df)
+else:
+    render_dashboard(df)
